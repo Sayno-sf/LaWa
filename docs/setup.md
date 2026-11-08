@@ -11,6 +11,8 @@
 | `python scripts/bootstrap.py start` | 用已安装的环境启动 |
 | `python scripts/bootstrap.py check` | 在临时数据目录验证本机服务 |
 
+Windows 可以双击仓库根目录的 [Start-LaWa.bat](../Start-LaWa.bat)。终端启动时也可以加 `--open`，等两项本机服务都就绪后自动打开浏览器。
+
 程序在回环地址启动 Web 和 Python Kernel，默认端口是 8787 和 8000。已经运行另一个 LaWa 时，可单独分配端口和数据目录。
 
 ```sh

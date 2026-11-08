@@ -1,22 +1,54 @@
 # LaWa
 
+简体中文 · [English](README.en.md)
+
 LaWa 是一个在自己电脑上运行的学习助手。你可以用一句话设定目标，让老师帮你规划路线、讲解和出题，再从上次的位置继续。学习记录由本地程序保存，掌握状态由学习者确认。
 
 ## 快速开始
 
-准备 **Python 3.11 或更新版本**和 **Node.js 24**（包含 npm），然后在仓库根目录运行。
+准备 **Python 3.11 或更新版本**和 **Node.js 24**（含 npm）。从 GitHub 下载 ZIP 并解压，或使用 Git 克隆。
+
+```sh
+git clone https://github.com/Sayno-sf/LaWa.git
+cd LaWa
+```
+
+**Windows** 可直接双击仓库里的 [Start-LaWa.bat](Start-LaWa.bat)。首次运行会创建虚拟环境、安装依赖并构建网页。服务就绪后，启动器会打开浏览器。
+
+也可以在仓库根目录通过命令行启动。
 
 ```sh
 python scripts/bootstrap.py
 ```
 
-macOS 或 Linux 上如果 Python 命令叫 `python3`，请用它替换 `python`。第一次运行会建立虚拟环境、安装依赖并构建网页。终端提示就绪后，打开 [http://127.0.0.1:8787](http://127.0.0.1:8787)。
+macOS 或 Linux 上如果 Python 命令叫 `python3`，请用它替换 `python`。命令行启动后，在终端提示就绪时打开 [http://127.0.0.1:8787](http://127.0.0.1:8787)。
 
 1. 打开「设置」，添加自己的模型服务商、模型名和 API Key。
 2. 保存配置后，点击「开始新目标」。描述想学什么、已经会什么，以及希望最终能做到什么。
-3. 下次运行 `python scripts/bootstrap.py start` 即可继续。用 Ctrl+C 停止本次启动的服务。
+3. 下次双击启动脚本，或运行 `python scripts/bootstrap.py start` 即可继续。用 Ctrl+C 停止本次启动的服务。
 
 网页和学习库可以先打开，老师和助教回复需要可用的模型配置。插画、语音和云端检索按需配置，对应的模型调用使用你自己的服务商账号。普通示意图和时间动画可由教师模型编排。
+
+已在 Windows 验证从零安装和启动。Linux 和 macOS 的完整安装验证待补齐。
+
+## 让 AI 助手帮你安装
+
+把下面这段复制给能操作本机终端的 AI 助手。
+
+```text
+请帮我在本机安装并启动 LaWa。仓库是 https://github.com/Sayno-sf/LaWa。
+先阅读仓库的 README.md，检查 Python 3.11+、Node.js 24 和 npm 是否可用。如果缺少前置依赖，
+用本机合适的官方安装方式处理，并按环境要求确认需要的权限。请在新的目录中克隆仓库，
+保留现有 LaWa 安装和数据。
+
+在仓库根目录运行 python scripts/bootstrap.py install，再运行 python scripts/bootstrap.py check。
+如果系统使用 python3，就替换命令里的 python。验证通过后，用 Start-LaWa.bat 或
+python scripts/bootstrap.py start 启动，确认网页实际可打开。默认只监听本机回环地址。
+如果 8787 或 8000 已被占用，请为新实例选择空闲端口，保留已有服务，并告诉我最终访问地址。
+
+请报告安装和启动检查结果，并告诉我去网页的「设置」里自行填入模型配置。
+安装验收无需我的 API Key，也无需发送模型请求。
+```
 
 ## 可以用 LaWa 做什么
 

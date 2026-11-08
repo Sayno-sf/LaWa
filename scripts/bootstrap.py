@@ -16,6 +16,7 @@ from time import monotonic, sleep
 from urllib.error import URLError
 from urllib.request import ProxyHandler, build_opener
 import venv
+import webbrowser
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -145,7 +146,7 @@ def stop(process: subprocess.Popen) -> None:
         process.wait()
 
 
-def start(data: Path, kernel_port: int, web_port: int, *, check: bool = False) -> None:
+def start(data: Path, kernel_port: int, web_port: int, *, check: bool = False, open_browser: bool = False) -> None:
     if not installed():
         raise RuntimeError("Run python scripts/bootstrap.py install first.")
     node = node_executable()
@@ -182,6 +183,13 @@ def start(data: Path, kernel_port: int, web_port: int, *, check: bool = False) -
             print("LaWa startup check passed with a fresh workspace.", flush=True)
             return
         print(f"\nLaWa is ready at {web_url}\nData directory: {data}\nPress Ctrl+C to stop.", flush=True)
+        if open_browser:
+            try:
+                opened = webbrowser.open(web_url)
+            except (OSError, webbrowser.Error):
+                opened = False
+            if not opened:
+                print(f"Open {web_url} in your browser.", flush=True)
         while all(process.poll() is None for process in children):
             sleep(0.5)
         raise RuntimeError("A LaWa service stopped. See the output above.")
@@ -203,6 +211,7 @@ def main() -> int:
     parser.add_argument("--port", type=parse_port, help="workspace port (default: 8787)")
     parser.add_argument("--kernel-port", type=parse_port, help="local Kernel port (default: 8000)")
     parser.add_argument("--data-dir", type=Path, help="local data directory (default: .lawa/)")
+    parser.add_argument("--open", action="store_true", help="open the workspace in your browser after startup")
     args = parser.parse_args()
     try:
         if args.command == "install" or (args.command == "run" and not installed()):
@@ -214,7 +223,7 @@ def main() -> int:
                 start(Path(data), args.kernel_port or 0, args.port or 0, check=True)
         elif args.command in ("run", "start"):
             data = (args.data_dir or ROOT / ".lawa").resolve()
-            start(data, args.kernel_port or 8000, args.port or 8787)
+            start(data, args.kernel_port or 8000, args.port or 8787, open_browser=args.open)
     except KeyboardInterrupt:
         print("\nLaWa stopped.", flush=True)
     except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
