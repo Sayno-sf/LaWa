@@ -1,0 +1,130 @@
+/* 手机端壳层：学习界面占满单屏，路线/记录各自成页，底部切换。所有规则都限定在 820px 以下，桌面端不参与。
+   选择器带上 #learning-workspace，避免与延迟注入的模块样式（计时/语音等）在窄屏上互相覆盖。 */
+.mobile-surface-tabs { display: none; }
+
+@media (max-width: 820px) {
+  /* 学习页不再整体纵向滚动：页面级滚动只保留给学习库/笔记/设置等独立页。 */
+  body[data-workspace="learn"] .workspace-main { height: calc(100dvh - 52px); min-height: 0; overflow: hidden; }
+  body[data-workspace="learn"] .dashboard { height: 100%; min-height: 0; padding: 0; display: flex; flex-direction: column; }
+  #learning-workspace .dashboard-grid { display: block; position: relative; flex: 1 1 auto; height: auto; min-height: 0; margin-top: 0; gap: 0; }
+
+  /* 三块内容不再是上下堆叠：同一屏里只显示一块，其余保留 DOM 与滚动位置。 */
+  #learning-workspace .dashboard-grid > .center-column,
+  #learning-workspace .dashboard-grid > .route-card,
+  #learning-workspace .dashboard-grid > .context-column {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--surface);
+  }
+  #learning-workspace .dashboard-grid > .route-card,
+  #learning-workspace .dashboard-grid > .context-column { display: none; }
+  body[data-mobile-screen="route"] #learning-workspace .dashboard-grid > .center-column,
+  body[data-mobile-screen="records"] #learning-workspace .dashboard-grid > .center-column { display: none; }
+  body[data-mobile-screen="route"] #learning-workspace .dashboard-grid > .route-card { display: flex; }
+  body[data-mobile-screen="records"] #learning-workspace .dashboard-grid > .context-column { display: flex; }
+
+  /* 学习界面：标题、对话/知识卡片切换、观察入口和消息区共用一个可滚动课堂。 */
+  #learning-workspace .center-column.learning-stage { display: flex; height: 100%; min-height: 0; }
+  #learning-workspace .learning-stage-header { padding: 6px 12px; gap: 6px 10px; }
+  /* 标题栏压成两行：任务行带观察入口，控制行带连接状态。 */
+  #learning-workspace .learning-stage-header.study-observer-header { grid-template-columns: minmax(0, 1fr) auto; }
+  #learning-workspace .study-observer-header .learning-stage-heading { grid-column: 1; grid-row: 1; }
+  #learning-workspace .study-observer-header .study-observer { grid-column: 2; grid-row: 1; justify-self: end; }
+  #learning-workspace .study-observer-header .learning-content-tools { grid-column: 1; grid-row: 2; }
+  #learning-workspace .study-observer-header .connection-pill { grid-column: 2; grid-row: 2; justify-self: end; max-width: none; }
+  /* 助教保留文字标签：手机用户第一次看到图标时仍需知道这是助教。 */
+  #learning-workspace .learning-content-tools .assistant-entry { min-width: 44px; min-height: 44px; padding-inline: 6px; }
+  /* 分段切换在手机上收窄，保证 360px 宽度也能把控制行放在同一行。 */
+  #learning-workspace .learning-view-tabs { flex: 0 0 168px; }
+  #learning-workspace .learning-view-tabs button { min-height: 36px; gap: 5px; padding-inline: 6px; font-size: 12px; }
+  /* 命中区扩到 44px 高，视觉行高不变：只向上、向下各溢出 4px，不与相邻控件重叠。 */
+  #learning-workspace .learning-view-tabs button::after { content: ""; position: absolute; inset: -4px 0; }
+  /* 有当前任务时用任务行当标题：通用标题与任务行不再各占一行。 */
+  #learning-workspace .learning-stage-heading.task-titled #workspace-title { display: none; }
+  #learning-workspace .learning-stage-heading.task-titled .header-task-info { margin-top: 0; }
+  #learning-workspace .learning-stage-heading.task-titled .header-task-label { font-size: 16px; line-height: 24px; font-weight: 600; }
+  /* 观察入口只留吉祥物与隐私盾牌：状态文字、时间与箭头都收进展开面板。 */
+  #learning-workspace .study-observer-header [data-study-compact-status],
+  #learning-workspace .study-observer-header .study-header-time,
+  #learning-workspace .study-observer-header .study-observer-chevron { display: none; }
+  #learning-workspace .study-observer-header .study-time-privacy { padding: 2px 4px; }
+  #learning-workspace .study-observer-header .study-time-privacy strong { display: none; }
+  #learning-workspace .study-observer-header .study-observer-trigger { position: relative; min-height: 34px; padding-inline: 2px; }
+  #learning-workspace .study-observer-header .study-observer-trigger::after { content: ""; position: absolute; inset: -5px 0; }
+  #learning-workspace .study-observer-header .study-time-toggle { position: relative; min-height: 34px; padding-inline: 4px; }
+  #learning-workspace .study-observer-header .study-time-toggle::after { content: ""; position: absolute; inset: -5px 0; }
+  /* ready 状态保留短文字：触屏看不到 hover 说明，只靠颜色点无法确认是否已保存。 */
+  #learning-workspace .learning-stage-header .connection-pill[data-status="ready"] { width: auto; gap: 4px; font-size: 11px; }
+  #learning-workspace .composer-wrap { padding-bottom: 8px; }
+
+  /* 代码在自身容器内横向滚动，保留原始换行与标识符。 */
+  #learning-workspace .message-content .code-block pre { overflow-x: auto; white-space: pre; overflow-wrap: normal; }
+
+  /* 底部三格只在滑到底时出现：离开底部时让出高度，输入栏保持固定不动。
+     首次进入、切换界面和程序跟随最新内容时都保持可见。 */
+  body.mobile-tabs-hidden #learning-workspace .mobile-surface-tabs { display: none; }
+
+  /* 路线界面：学习路线本身滚动，资料入口和完整路线留在底部。 */
+  #learning-workspace .dashboard-grid > .route-card { flex-direction: column; padding: 16px 14px 12px; overflow: hidden; }
+  #learning-workspace .route-card .card-heading { margin-bottom: 6px; }
+  #learning-workspace .route-card .skill-route { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-inline: 2px; }
+  /* 记录界面：两张卡片回到普通卡片观感，整页滚动。 */
+  #learning-workspace .dashboard-grid > .context-column { flex-direction: column; gap: 12px; padding: 16px 14px 20px; overflow-y: auto; overscroll-behavior: contain; }
+  #learning-workspace .context-column > .surface-card { border: 1px solid var(--line); border-radius: 14px; }
+
+  /* 底部切换：沿用左侧导航的选中样式（蓝底蓝字），触控高度保持 44px。 */
+  #learning-workspace .mobile-surface-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex: 0 0 auto;
+    gap: 4px;
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+  #learning-workspace .mobile-surface-tabs button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    min-height: 44px;
+    padding: 3px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  #learning-workspace .mobile-surface-tabs .ui-icon { width: 20px; height: 20px; }
+  #learning-workspace .mobile-surface-tabs button[aria-current="true"] { color: var(--blue); background: var(--blue-soft); font-weight: 600; }
+  #learning-workspace .mobile-surface-tabs button:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+}
+
+@media (max-width: 820px) and (max-height: 560px) {
+  /* 键盘弹出或矮视口：任务说明不再占行，把高度让给消息与输入。 */
+  #learning-workspace .learning-stage-header { padding-block: 6px; }
+  #learning-workspace .study-observer-header .learning-stage-heading .header-task-info { display: none; }
+}
+
+@media (max-width: 820px) {
+  /* 手机顶栏触控目标统一到 44px 并留出 8px 间距，避免拇指误触相邻按钮。 */
+  .topbar .sidebar-toggle { flex-basis: 44px; width: 44px; height: 44px; }
+  .topbar-actions { gap: 8px; }
+  .topbar-actions .icon-button { width: 44px; height: 44px; }
+  .topbar-actions .icon-button::after { display: none; }
+  .topbar-actions .profile-button { min-width: 44px; min-height: 44px; }
+  .topbar-actions .new-goal-entry { min-height: 44px; }
+}
+
+@media (max-width: 520px) {
+  #learning-workspace .dashboard-grid > .route-card,
+  #learning-workspace .dashboard-grid > .context-column { padding-inline: 12px; }
+  #learning-workspace .learning-stage-header { padding-inline: 10px; }
+}

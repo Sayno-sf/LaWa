@@ -1,0 +1,37 @@
+name: LaWa checks
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: pi-agent/package-lock.json
+      - run: python scripts/bootstrap.py install
+      - run: python scripts/bootstrap.py check
+      - run: npm --prefix pi-agent run check
+      - run: npm --prefix pi-agent run check:web
+      - name: Kernel tests
+        if: runner.os == 'Linux'
+        run: |
+          .venv/bin/python -m pip install pytest
+          .venv/bin/python -m pytest -q
+      - name: Teaching and growth regressions
+        if: runner.os == 'Linux'
+        working-directory: pi-agent
+        run: node --import tsx --test src/web/teacherProtocol.test.ts src/web/growthContinuation.test.ts src/growthRuntime.test.ts

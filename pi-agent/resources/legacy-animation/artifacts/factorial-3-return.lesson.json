@@ -1,0 +1,149 @@
+{
+  "schema_version": "lawa.lesson.v1",
+  "decision": "animate",
+  "title": "factorial(3) 的调用栈与逐层返回",
+  "target": "理解递归函数在命中基例后，如何把结果一层层交回上一层，直到返回外部调用者。",
+  "prerequisites": [
+    "函数调用时会把参数和局部变量保存在一个栈帧里",
+    "函数返回时该栈帧被弹出",
+    "乘法结合顺序：3*2*1"
+  ],
+  "assumptions": [
+    "只讨论本版阶乘定义：n≤1 返回 1，否则返回 n*factorial(n-1)",
+    "栈帧只画当前还没结束的函数调用，不显示寄存器和优化过程",
+    "真实运行时有编译器优化，这里展示的是未优化的调用与返回顺序"
+  ],
+  "recipe": "call_stack",
+  "parameters": {
+    "function": "factorial",
+    "n": 3
+  },
+  "scenes": [
+    {
+      "id": "call_3",
+      "caption": "外部调用者要 factorial(3)，先压入第一层栈帧。",
+      "why": "3 大于 1，不满足基例，必须先把 3 记在这一层，再求 factorial(2)。",
+      "duration_s": 5,
+      "state": {
+        "frames": [
+          3
+        ],
+        "return_value": null,
+        "phase": "call"
+      }
+    },
+    {
+      "id": "call_2",
+      "caption": "3 还在等着，接着压入 factorial(2)。",
+      "why": "2 也大于 1，同样要把 2 记在自己这层，再求 factorial(1)。",
+      "duration_s": 5,
+      "state": {
+        "frames": [
+          3,
+          2
+        ],
+        "return_value": null,
+        "phase": "call"
+      }
+    },
+    {
+      "id": "call_1",
+      "caption": "3 和 2 还在等待，现在压入 factorial(1)。",
+      "why": "1 满足 n≤1，不过这一帧刚压入，还没有执行到返回；下一步才判定基例并得到 1。",
+      "duration_s": 5,
+      "state": {
+        "frames": [
+          3,
+          2,
+          1
+        ],
+        "return_value": null,
+        "phase": "call"
+      }
+    },
+    {
+      "id": "base_case",
+      "caption": "factorial(1) 命中基例，得到 1，准备返回。",
+      "why": "n≤1 时直接返回 1，不再往下调用，这层栈帧此刻仍留在栈上。",
+      "duration_s": 6,
+      "state": {
+        "frames": [
+          3,
+          2,
+          1
+        ],
+        "return_value": 1,
+        "phase": "base"
+      }
+    },
+    {
+      "id": "return_2",
+      "caption": "1 交回给 factorial(2)，2 乘 1 得 2。",
+      "why": "上一层做的是 2*factorial(1)，代入返回值就是 2*1=2，这一层算完自己的结果准备返回。",
+      "duration_s": 6,
+      "state": {
+        "frames": [
+          3,
+          2
+        ],
+        "return_value": 2,
+        "phase": "return"
+      }
+    },
+    {
+      "id": "return_3",
+      "caption": "2 交回给 factorial(3)，3 乘 2 得 6。",
+      "why": "最外层做的是 3*factorial(2)，代入返回值就是 3*2=6。",
+      "duration_s": 6,
+      "state": {
+        "frames": [
+          3
+        ],
+        "return_value": 6,
+        "phase": "return"
+      }
+    },
+    {
+      "id": "done",
+      "caption": "6 回到外部调用者手里，栈已经清空。",
+      "why": "每一层都算完并弹出，factorial(3) 的结果 6 交给最初发起调用的地方。",
+      "duration_s": 5,
+      "state": {
+        "frames": [],
+        "return_value": 6,
+        "phase": "done"
+      }
+    }
+  ],
+  "checkpoint": {
+    "after_scene": "base_case",
+    "prompt": "按这个返回过程，factorial(3) 最后交给外部调用者的结果是多少？",
+    "metric": "final_return",
+    "options": [
+      {
+        "id": "a",
+        "value": 3
+      },
+      {
+        "id": "b",
+        "value": 6
+      },
+      {
+        "id": "c",
+        "value": 9
+      }
+    ],
+    "branches": {
+      "correct": {
+        "caption": "对，三层乘完是 6。",
+        "why": "1 交给 2 得 2，2 交给 3 得 6，暂停处你的预测与实际返回一致。",
+        "replay_scene": "return_2"
+      },
+      "incorrect": {
+        "caption": "先看每一层拿到的数怎么乘上去。",
+        "why": "如果只把各层相加或只乘了部分层，就会得到别的数；这里每层返回的是 n 乘以下一层的结果。",
+        "replay_scene": "return_3"
+      }
+    }
+  }
+}

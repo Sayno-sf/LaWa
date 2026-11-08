@@ -1,0 +1,15 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.venv/
+.env
+.env.*
+node_modules/
+dist/
+web-dist/
+*.log
+/.lawa/
+/data/
+/backups/
+/pi-agent/web/public/assets/study-camera/
+/third_party/mediapipe/face_landmarker.task

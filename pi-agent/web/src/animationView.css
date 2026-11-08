@@ -1,0 +1,25 @@
+.teaching-animation { margin: 16px 0; padding: 20px 0 12px; border-block: 1px solid var(--border-subtle); color: var(--text-primary); }
+.message-content .animation-title { margin: 0 0 8px; font-size: 20px; font-weight: 600; line-height: 1.45; }
+.animation-stage { display: block; width: 100%; height: 330px; overflow: visible; }
+.animation-stage text { font-family: inherit; }
+.message-content .animation-caption { max-width: 48ch; min-height: 58px; margin: 8px auto 18px; text-align: center; font-size: 18px; line-height: 1.7; text-wrap: balance; }
+.animation-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.animation-controls button, .animation-options button, .animation-composer-reference button, .animation-request-actions button, .animation-message-reference { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 10px; color: var(--text-primary); background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 6px; font: inherit; font-size: 13px; cursor: pointer; }
+.animation-controls button:hover:not(:disabled), .animation-options button:hover:not(:disabled), .animation-composer-reference button:hover:not(:disabled), .animation-request-actions button:hover:not(:disabled) { background: var(--accent-soft); }
+.animation-controls .animation-play { color: var(--surface); background: var(--accent); border-color: var(--accent); }
+.animation-controls .animation-play:hover:not(:disabled) { background: var(--accent-hover); }
+.animation-controls button:disabled, .animation-options button:disabled { opacity: .5; cursor: default; }
+.animation-step { margin-left: auto; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.animation-checkpoint { padding: 16px 0; margin: 0 0 16px; border-block: 1px solid var(--border-subtle); }
+.animation-checkpoint[hidden], .animation-composer-reference[hidden], .animation-request-actions[hidden] { display: none; }
+.message-content .animation-prompt { margin: 0 0 12px; }
+.animation-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.message-content .animation-feedback { color: var(--accent); font-size: 14px; margin: 12px 0 0; }
+.animation-feedback:empty, .animation-status:empty { display: none; }
+.message-content .animation-status { color: var(--text-secondary); font-size: 12px; margin: 10px 0 0; }
+.animation-composer-reference { display: flex; gap: 8px; align-items: center; padding: 8px 2px; color: var(--text-secondary); font-size: 13px; }
+.animation-composer-reference span { min-width: 0; flex: 1; }
+.animation-composer-reference button { flex: none; min-height: 28px; border: 0; background: transparent; padding: 2px 4px; }
+.animation-request-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text-secondary); }
+.animation-message-reference { margin: 0 0 8px; color: var(--text-secondary); background: transparent; border: 0; padding: 0; min-height: 26px; text-align: left; }
+@media (prefers-reduced-motion: reduce) { .teaching-animation * { scroll-behavior: auto; } }

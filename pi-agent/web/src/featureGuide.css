@@ -1,0 +1,20 @@
+/* 附加提示层不参与工作区布局，不覆盖整屏，也不拦截原入口。 */
+.feature-guide { position: fixed; z-index: 900; width: min(320px, calc(100vw - 24px)); padding: 18px; box-sizing: border-box; border: 1px solid var(--border-control); border-radius: 8px; background: var(--surface); color: var(--text-primary); }
+.feature-guide[hidden], .feature-guide-outline[hidden] { display: none; }
+.feature-guide h2 { margin: 0 0 8px; font-size: 16px; line-height: 1.5; font-weight: 600; }
+.feature-guide p { margin: 0; font-size: 14px; line-height: 1.75; color: var(--text-secondary); }
+.feature-guide-actions { display: flex; justify-content: space-between; gap: 16px; margin-top: 16px; }
+.feature-guide-actions button { min-height: 36px; padding: 6px 10px; border: 0; border-radius: 5px; font: inherit; font-size: 13px; color: var(--text-secondary); background: transparent; cursor: pointer; }
+.feature-guide-actions [data-guide-next] { color: var(--accent); background: var(--accent-soft); }
+.feature-guide-actions button:hover { color: var(--accent-hover); background: var(--surface-muted); }
+.feature-guide-actions button:focus-visible, .feature-guide-reference button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.feature-guide-outline { position: fixed; z-index: 899; border: 1px solid var(--accent); border-radius: 5px; pointer-events: none; box-sizing: border-box; }
+.feature-guide-reference { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); color: var(--text-primary); }
+.feature-guide-reference > summary { cursor: pointer; font-size: 15px; }
+.feature-guide-reference > p { color: var(--text-secondary); font-size: 14px; line-height: 1.75; }
+.feature-guide-reference h3 { margin: 28px 0 14px; font-size: 16px; }
+.feature-guide-reference dl { margin: 0; }
+.feature-guide-reference dt { margin-top: 18px; font-size: 15px; font-weight: 500; }
+.feature-guide-reference dt small { display: block; margin-top: 3px; color: var(--text-secondary); font-size: 13px; font-weight: 400; }
+.feature-guide-reference dd { margin: 6px 0 0; max-width: 65ch; color: var(--text-secondary); font-size: 14px; line-height: 1.75; }
+.feature-guide-reference > button:last-of-type { margin-top: 24px; }

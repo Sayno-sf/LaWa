@@ -1,0 +1,37 @@
+.voice-input-button { flex: 0 0 40px; width: 40px; min-height: 40px; display: inline-grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: #425b7d; cursor: pointer; }
+.voice-input-button:hover { background: #eef3fc; color: var(--blue); }
+.voice-input-button:focus-visible, .speech-example-actions button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.voice-input-button:disabled { opacity: .45; cursor: default; }
+.voice-input-button[data-state="recording"] { color: #a1253b; background: #fff0f2; }
+.voice-input-button[data-state="requesting"], .voice-input-button[data-state="transcribing"] { color: var(--blue); background: #eef3fc; }
+.voice-input-button .ui-icon { width: 20px; height: 20px; }
+.voice-input-status { margin: 7px 3px 0; color: #425b7d; font-size: 12px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.speech-example { margin: 12px 0 4px; padding: 14px 16px; border: 1px solid #dce3ee; border-radius: 12px; background: #fbfcfe; }
+.speech-example-text { margin: 0; color: var(--ink); font-size: 17px; line-height: 1.7; overflow-wrap: anywhere; white-space: pre-wrap; }
+.speech-example-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; }
+.speech-example-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; border: 0; border-radius: 7px; padding: 0 10px; color: #315986; background: transparent; font: inherit; font-size: 13px; cursor: pointer; }
+.speech-example-actions button:hover { background: #eef3fc; }
+.speech-example-actions button:disabled { opacity: .45; cursor: default; }
+.speech-example-actions button[aria-pressed="true"] { color: var(--blue); background: #eef3fc; }
+.speech-example-actions .ui-icon { width: 17px; height: 17px; }
+.speech-example-status { color: #425b7d; font-size: 12px; line-height: 1.5; }
+.speech-example-status.speech-error { color: #a1253b; }
+.speech-settings { margin-top: 32px; padding-top: 22px; border-top: 1px solid var(--line); }
+.speech-settings > summary, .speech-models > summary { color: #425b7d; font-size: 14px; cursor: pointer; }
+.speech-settings > p { max-width: 70ch; margin: 14px 0 20px; color: #53657e; font-size: 13px; line-height: 1.7; }
+.speech-enabled { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; font-size: 14px; }
+.speech-enabled input { accent-color: var(--blue); }
+.speech-models { margin-top: 20px; }
+.speech-models .settings-grid { margin-top: 18px; }
+.speech-settings-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; margin-top: 24px; }
+.speech-settings-actions button { min-height: 44px; padding: 0 18px; font-size: 13px; }
+.speech-settings-actions p { margin: 0; color: #425b7d; font-size: 13px; line-height: 1.6; }
+@media (max-width: 520px) {
+  .voice-input-button { flex-basis: 44px; width: 44px; min-height: 44px; }
+  .learning-stage .composer { gap: 4px; }
+  .learning-stage .composer textarea { min-width: 0; }
+  .speech-example { padding: 12px; }
+  .speech-example-actions button { min-height: 44px; }
+  .speech-example-status { flex-basis: 100%; }
+  .speech-settings-actions { align-items: flex-start; }
+}

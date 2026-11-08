@@ -1,0 +1,17 @@
+.teaching-proposals:empty { display: none; }
+.teaching-proposals { margin: 16px 0; max-width: 74ch; }
+.teaching-proposal { border: 1px solid #dce7f6; border-radius: 12px; padding: 16px; background: #fff; color: #10234f; overflow-wrap: anywhere; }
+.teaching-proposal h3, .teaching-arrangements h3 { margin: 0 0 10px; font-size: 1rem; }
+.teaching-proposal p { margin: 8px 0; line-height: 1.65; }
+.proposal-reason, .proposal-scope { color: #4e6384; font-size: .88rem; }
+.proposal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.teaching-proposal details { margin-top: 10px; }
+.teaching-proposal summary { cursor: pointer; color: #214e9b; }
+.teaching-proposal label, .confirmed-strategy label { display: grid; gap: 6px; margin: 12px 0; }
+.teaching-proposal textarea, .confirmed-strategy textarea { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #b5c5dc; border-radius: 8px; font: inherit; color: inherit; background: #fff; resize: vertical; }
+.teaching-proposal [data-status], .teaching-arrangements [data-status] { color: #8b2a2a; }
+.teaching-arrangements { max-width: 780px; }
+.confirmed-strategy { border-bottom: 1px solid #dce7f6; padding: 22px 0; }
+.confirmed-strategy:first-child { padding-top: 0; }
+.confirmed-strategy p { margin: 0; line-height: 1.65; overflow-wrap: anywhere; }
+.teaching-proposals :focus-visible, .teaching-arrangements :focus-visible { outline: 3px solid #214e9b; outline-offset: 3px; }

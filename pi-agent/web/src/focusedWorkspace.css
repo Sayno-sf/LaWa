@@ -1,0 +1,96 @@
+/* Desktop learning workspace. Existing mobile shell and all learning actions stay intact. */
+.focused-sidebar-scroll { display: contents; }
+.focused-assistant-backdrop { display: none; }
+@media (min-width: 821px) {
+  body { background: var(--surface); }
+  .topbar { height: 56px; padding-inline: 16px 24px; background: var(--surface); border-color: var(--line); box-shadow: none; }
+  .brand-copy strong { font-size: 15px; }
+  .brand-mark { width: 28px; height: 28px; border-radius: 7px; box-shadow: none; }
+  .app-shell { grid-template-columns: 248px minmax(0,1fr); height: calc(100dvh - 56px); }
+  body.sidebar-collapsed .app-shell { grid-template-columns: 64px minmax(0,1fr); }
+  .sidebar, body.sidebar-collapsed .sidebar { display: flex; position: relative; top: 0; height: 100%; min-height: 0; padding: 16px 12px 0; gap: 12px; background: var(--surface-muted); border-right: 1px solid var(--line); overflow: hidden; }
+  .sidebar .nav-list { flex: none; gap: 4px; }
+  .sidebar .nav-item { min-height: 40px; border-radius: 7px; padding: 10px 12px; font-size: 13px; color: var(--muted); }
+  .sidebar .nav-item.active { color: var(--blue); background: var(--blue-soft); }
+  .sidebar .nav-item .ui-icon { width: 19px; height: 19px; flex: none; }
+  body.sidebar-collapsed .sidebar .nav-item { justify-content: center; padding-inline: 0; }
+  body.sidebar-collapsed .sidebar .nav-item span { display: none; }
+  body.sidebar-collapsed .focused-sidebar-scroll { display: none; }
+  .focused-sidebar-scroll { display: block; min-height: 0; flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .focused-sidebar-scroll .conversation-library { min-height: 0; height: auto; overflow: visible; margin: 0; padding: 18px 4px; border-top: 1px solid var(--line); }
+  .focused-sidebar-scroll .conversation-list { overflow: visible; max-height: none; flex: none; }
+  .focused-sidebar-scroll .conversation-item { background: transparent; }
+  .workspace-main { height: calc(100dvh - 56px); min-width: 0; }
+  #learning-workspace.dashboard { height: 100%; padding: 0; }
+  #learning-workspace .dashboard-grid { height: 100%; min-height: 0; gap: 0; grid-template-areas: "center"; grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr); }
+  #learning-workspace .context-column { display: none; }
+  #learning-workspace .learning-stage { border: 0; border-radius: 0; background: var(--surface); box-shadow: none; }
+  .learning-stage-heading .header-task-info { color: var(--muted); font-size: 11px; margin: 0; }
+  .learning-view-tabs { display: flex; width: auto !important; flex: none; gap: 18px; padding: 0; background: transparent; border-radius: 0; }
+  .learning-tab-indicator { display: none; }
+  .learning-view-tabs button { border-radius: 0; padding: 6px 0; min-height: 32px; color: var(--muted); border-bottom: 2px solid transparent; }
+  .learning-view-tabs button[aria-selected="true"] { border-bottom-color: var(--blue); color: var(--ink); }
+  .focused-task-slot { flex: none; min-height: 0; padding: 0 28px; }
+  #skill-card { max-width: 940px; max-height: min(44dvh,380px); overflow: auto; margin: 0 auto; padding: 18px 0 14px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
+  .focused-skill-heading { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .focused-skill-label { flex: none; color: var(--muted); font-size: 11px; }
+  #skill-card .current-skill-title { margin: 0; padding: 0; min-width: 0; background: transparent; }
+  #skill-card .current-skill-title h3 { font-size: 16px; font-weight: 600; line-height: 1.5; margin: 0; color: var(--ink); }
+  #skill-card .state-badge { flex: none; font-size: 11px; padding: 3px 6px; border-radius: 4px; }
+  #skill-card .skill-mastery { margin: 0 0 0 auto; flex: none; }
+  #skill-card .mastery-button, #skill-card .skill-mastery .secondary-action { min-height: 32px; padding: 6px 10px; width: auto; font-size: 11px; background: transparent; border: 1px solid var(--border-control); border-radius: 6px; color: var(--blue); }
+  .focused-skill-meta { display: flex; align-items: center; gap: 16px; margin-top: 9px; font-size: 11px; color: var(--muted); }
+  .focused-skill-meta strong { font-weight: 500; }
+  .focused-skill-meta .skill-description-toggle { padding: 0; margin: 0; font-size: 12px; }
+  .focused-skill-details { margin-top: 14px; padding: 14px 16px; border-radius: 7px; background: var(--surface-muted); }
+  .focused-skill-details[hidden] { display: none; }
+  .focused-skill-details .skill-description-text { font-size: 13px; line-height: 1.8; margin: 0 0 12px; color: var(--text-secondary); }
+  .focused-skill-details .evidence-card { padding: 12px 0 0; margin-top: 10px; border: 0; border-top: 1px solid var(--line); background: transparent; border-radius: 0; box-shadow: none; }
+  .focused-skill-details .evidence-card h2 { font-size: 12px; }
+  .learning-stage .learning-pane { background: var(--surface); }
+  /* Fade the reading viewport, not the composer: activity and multiline input keep their own space. */
+  .learning-stage .messages, .assistant-panel .assistant-messages {
+    /* The opaque edge strip keeps the scrollbar visible all the way to the bottom. */
+    mask-image: linear-gradient(to bottom, #000 calc(100% - var(--reading-fade)), transparent), linear-gradient(#000, #000);
+    mask-size: 100% 100%, 8px 100%;
+    mask-position: left top, right top;
+    mask-repeat: no-repeat;
+  }
+  .learning-stage .messages {
+    --reading-fade: 32px;
+    padding: 28px 32px 64px;
+    scroll-padding-bottom: 64px;
+  }
+  .learning-stage .message, body.sidebar-collapsed .learning-stage .message { width: 100%; max-width: 820px; }
+  .learning-stage .message-content { font-size: 16px; line-height: 1.85; color: var(--ink); }
+  .learning-stage .message-content pre { background: var(--surface-muted); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+  .learning-stage .message.user .message-content { background: var(--surface-muted); }
+  .learning-stage .composer-wrap { padding: 0 28px 18px; }
+  .learning-stage .composer { max-width: var(--reading-width); margin: 0 auto; padding: 10px; border-color: var(--line); border-radius: 12px; box-shadow: 0 2px 5px #27362605; }
+  .learning-stage .composer textarea { font-size: 14px; }
+  body.assistant-open.assistant-side-by-side #learning-workspace .dashboard-grid { grid-template-areas: "center context"; grid-template-columns: minmax(640px,1fr) var(--assistant-width,360px); gap: 0; }
+  .assistant-dock { border-left: 1px solid var(--line); }
+  .assistant-panel { border: 0; border-radius: 0; background: var(--surface-muted); }
+  .assistant-heading { padding: 20px; }
+  .assistant-panel .assistant-messages {
+    --reading-fade: 24px;
+    padding: 20px 20px 48px;
+    scroll-padding-bottom: 48px;
+  }
+  .assistant-message .message-content { font-size: 14px; }
+  .assistant-resize-handle { left: -5px; width: 10px; }
+  .assistant-resize-handle::before { left: 4px; }
+  .learning-stage-viewport > .assistant-panel { inset: 0 0 0 auto; width: min(400px,85%); z-index: 5; border-left: 1px solid var(--line); box-shadow: -12px 0 32px #26342812; }
+  .learning-stage-viewport > .assistant-panel .assistant-message .message-content { font-size: 14px; }
+  body.assistant-open:not(.assistant-side-by-side) .learning-stage-track { visibility: visible; }
+  .focused-assistant-backdrop:not([hidden]) { display: block; position: absolute; inset: 0; z-index: 4; border: 0; background: #25352c18; }
+}
+@media (min-width: 821px) and (forced-colors: active) {
+  .learning-stage .messages, .assistant-panel .assistant-messages { mask-image: none; }
+}
+@media (min-width: 821px) and (max-width: 1150px) {
+  .focused-skill-label { display: none; }
+  .focused-skill-heading { flex-wrap: wrap; }
+  #skill-card .current-skill-title { flex: 1 1 280px; }
+  .focused-task-slot { padding-inline: 20px; }
+}

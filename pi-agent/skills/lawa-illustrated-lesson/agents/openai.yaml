@@ -1,0 +1,4 @@
+interface:
+  display_name: "图解讲页"
+  short_description: "在课堂正文中穿插书籍插画、可调示意和分段讲解动画，支持停帧提问"
+  default_prompt: "用 $lawa-illustrated-lesson 为这个问题写一页配有插画的讲解。"

@@ -1,0 +1,46 @@
+/* Shared palette and scale. Legacy names are aliases, never a second palette. */
+:root {
+  --canvas: #f7f6f2;
+  --surface: #fcfbf8;
+  --surface-input: #ffffff;
+  --surface-muted: #f0f1ec;
+  --text-primary: #29332e;
+  --text-secondary: #5f6962;
+  --text-muted: #626e65;
+  --accent: #465b7a;
+  --accent-hover: #374a65;
+  --accent-soft: #e9edf3;
+  --success: #3f6b56;
+  --success-soft: #edf3ee;
+  --border-subtle: #dde1d8;
+  --border-control: #818b81;
+  --danger: #a03f3f;
+  --danger-soft: #fbefed;
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --blue: var(--accent);
+  --blue-dark: var(--accent-hover);
+  --blue-soft: var(--accent-soft);
+  --blue-pale: var(--surface-muted);
+  --teal: var(--success);
+  --teal-soft: var(--success-soft);
+  --line: var(--border-subtle);
+  --state-learning: var(--accent);
+  --state-mastered: var(--success);
+  --state-pending: var(--text-muted);
+  --shadow: 0 12px 32px #29332e12;
+  --reading-width: 820px;
+  --page-width: 1040px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  color: var(--text-primary);
+  background: var(--canvas);
+  font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  font-size: 16px;
+  font-synthesis: none;
+}

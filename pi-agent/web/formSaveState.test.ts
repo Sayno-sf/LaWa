@@ -1,0 +1,34 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {JSDOM} from "jsdom";
+import {FormSaveState} from "./src/formSaveState.js";
+
+test("settings dirty/revert/save/error use actual values and lock duplicate submits without losing disabled fields", () => {
+  const dom = new JSDOM('<form><input name="model" value="saved"><input type="checkbox" name="enabled"><input name="locked" disabled><button type="submit">Save</button><p></p></form>');
+  const form = dom.window.document.querySelector("form")!;
+  const output = form.querySelector("p")!;
+  const field = form.querySelector("input")!;
+  const status = new FormSaveState(form, output);
+  status.markClean();
+  field.value="draft";field.dispatchEvent(new dom.window.Event("input",{bubbles:true}));
+  assert.equal(output.dataset.saveState,"dirty");
+  field.value="saved";field.dispatchEvent(new dom.window.Event("input",{bubbles:true}));
+  assert.equal(output.dataset.saveState,"saved");
+  const checkbox = form.querySelector<HTMLInputElement>('[type="checkbox"]')!;
+  checkbox.checked=true;checkbox.dispatchEvent(new dom.window.Event("change",{bubbles:true}));
+  assert.equal(output.dataset.saveState,"dirty");
+  assert.equal(status.begin(),true);
+  assert.equal(status.begin(),false);
+  assert.equal(output.dataset.saveState,"saving");
+  assert.equal(field.disabled,true);
+  status.error("Network unavailable");
+  assert.equal(output.dataset.saveState,"error");
+  assert.equal(checkbox.checked,true);
+  assert.equal(field.disabled,false);
+  assert.equal(form.querySelector<HTMLInputElement>('[name="locked"]')!.disabled,true);
+  status.begin();status.success();
+  assert.equal(output.dataset.saveState,"saved");
+  checkbox.checked=false;checkbox.dispatchEvent(new dom.window.Event("change",{bubbles:true}));
+  assert.equal(output.dataset.saveState,"dirty");
+  dom.window.close();
+});

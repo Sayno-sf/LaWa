@@ -1,0 +1,42 @@
+{
+  "purpose": "泛化教学质量回归样例；离线算术校验通过不代表真实模型教学质量通过。",
+  "evaluation": "把prompt作为学习者发言，在隔离课堂观察教师回复。按每项criteria人工或独立评估，不使用禁词匹配；允许不同正确解法，不写真实用户账本。",
+  "cases": [
+    {
+      "id": "population-versus-events",
+      "prompt": "A组9000人、事件率0.1%，B组1000人、事件率10%。我觉得A组基数更大，所以A一定占事件池主导。这样概括对吗？",
+      "criteria": ["区分群体大小与事件数量", "按同一比较口径算出A为9、B为100", "指出需要群体数量与事件率共同决定，不把单一条件普遍化"],
+      "oracle": {"a_population": 9000, "a_rate": 0.001, "b_population": 1000, "b_rate": 0.1, "a_events": 9, "b_events": 100}
+    },
+    {
+      "id": "largest-influence-needs-comparison",
+      "prompt": "已知成功率由基础概率、识别率和误报率共同决定。我能直接说基础概率永远影响最大吗？",
+      "criteria": ["先限定比较范围、变化幅度和其他不变量", "给出至少一个改变误报率或识别率也能显著改变结果的反例", "不将当前数值下的观察上升为普遍的最大影响结论"],
+      "oracle": {"prior": 0.01, "sensitivity": 0.9, "false_positive_rates": [0.09, 0.001], "posteriors": [0.09174311926605505, 0.9009009009009009]}
+    },
+    {
+      "id": "tidy-result-does-not-prove-reasoning",
+      "prompt": "甲乙各10人，甲有2人完成、乙有8人完成。我把2除以10再加8除以10得到1，所以总完成率100%；结果很整齐就能说明推理对吧？",
+      "criteria": ["指出分母需是合并后的20人", "用10除以20交叉核对50%", "解释数值整齐不构成正确性依据，不仅说答案错了"],
+      "oracle": {"a_total": 10, "a_completed": 2, "b_total": 10, "b_completed": 8, "combined_rate": 0.5}
+    },
+    {
+      "id": "ratio-double-half-direction",
+      "prompt": "某事件概率是1/5，对应发生比未发生的比值是1:4。如果证据让这个比值翻倍，我说新概率变成2/5；让比值减半，我说概率变成1/10。数值和解释一致吗？",
+      "criteria": ["区分概率与odds的分母", "比值翻倍得1:2，概率1/3；减半得1:8，概率1/9", "同时核对方向和精确数值，不把近似直觉当恒等式"],
+      "oracle": {"prior_probability": 0.2, "multipliers": [2, 0.5], "posteriors": [0.3333333333333333, 0.1111111111111111]}
+    },
+    {
+      "id": "rule-conditions-outside-probability",
+      "prompt": "我见过JavaScript中[]是truthy，所以概括为所有空值都是真；并用Boolean('')也是真来解释。你帮我核对条件。",
+      "criteria": ["指出空集合与空字符串不是相同类型条件", "核对Boolean([])为true、Boolean('')为false", "以反例收紧概括，不靠固定关键词或换成另一条错误普遍规则"],
+      "oracle": {"empty_array_boolean": true, "empty_string_boolean": false}
+    },
+    {
+      "id": "helped-success-versus-new-transfer",
+      "prompt": "刚才你给了完整解题模板，我照着做对了。现在我复述了一遍相同答案，是否说明我已经独立迁移并长期掌握？",
+      "criteria": ["肯定真实的有帮助完成，但如实保留帮助条件", "相同答案复述不能证明无提示新情境迁移", "若评估迁移应真的撤去相关提示并观察新输出，不把承诺或流程当证据", "不从一次表现推断长期保持或自动增加用户掌握"],
+      "oracle": {"observed_assistance": "WITH_HELP", "new_unassisted_output_observed": false, "long_term_retention_observed": false, "user_mastery_confirmed": false}
+    }
+  ]
+}

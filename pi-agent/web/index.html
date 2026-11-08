@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f9fc" />
+    <title>Learn Anything</title>
+    <style>html.intro-pending #app { visibility: hidden; }</style>
+    <script>
+      // 避免工作区先闪现；入口脚本加载失败时也在 1.5 秒后释放原页面。
+      document.documentElement.classList.add("intro-pending");
+      setTimeout(() => document.documentElement.classList.remove("intro-pending"), 1500);
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="收起左侧导航" aria-expanded="true" aria-controls="sidebar" title="收起/展开左侧导航">
+            <i data-icon="panelClose" class="icon-open"></i>
+            <i data-icon="panelOpen" class="icon-closed"></i>
+          </button>
+          <a class="brand" href="#learn" data-workspace-target="learn" aria-label="返回学习">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" role="img">
+              <path d="M24 11c-4.5-4.2-10.6-5.8-17-4v27c6.4-1.8 12.5-.2 17 4V11Z" />
+              <path d="M24 11c4.5-4.2 10.6-5.8 17-4v27c-6.4-1.8-12.5-.2-17 4V11Z" />
+            </svg>
+          </span>
+          <span class="brand-copy"><strong>Learn Anything</strong><small>让学习有迹可循</small></span>
+          </a>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="new-goal-button" class="new-goal-entry" type="button" aria-label="开始新目标" title="开始新目标，保留原有学习记录"><i data-icon="goal"></i><span class="new-goal-label">开始新目标</span><span class="new-goal-short-label">新目标</span></button>
+          <button id="provider-status-button" class="provider-status-button" type="button" aria-label="打开模型设置" title="模型设置">
+            <span class="provider-status-dot" aria-hidden="true"></span>
+            <span><small>当前模型</small><strong id="provider-status-label">未配置</strong></span>
+          </button>
+          <button id="activity-button" class="icon-button" type="button" aria-label="查看老师活动" title="老师在做什么">
+            <i data-icon="activity"></i>
+            <span id="activity-indicator" class="activity-indicator hidden"></span>
+          </button>
+          <div class="profile-wrap">
+            <button id="profile-button" class="profile-button" type="button" aria-label="学习管理" title="学习管理" aria-expanded="false" aria-controls="profile-menu"><i data-icon="more"></i></button>
+            <div id="profile-menu" class="profile-menu hidden">
+              <button id="conversation-library-menu-button" type="button"><span><i data-icon="conversations"></i></span><span><strong>管理对话</strong><small>新建、切换或整理本地对话</small></span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <button id="mobile-nav-backdrop" class="mobile-nav-backdrop" type="button" aria-label="关闭导航"></button>
+
+      <div class="app-shell">
+        <nav id="sidebar" class="sidebar" aria-label="主导航">
+          <div class="nav-list">
+            <a id="learning-home-link" class="nav-item active" href="#learn" data-workspace-target="learn" aria-current="page">
+              <i data-icon="book"></i><span>学习</span>
+            </a>
+
+            <button id="learning-library-button" class="nav-item" data-workspace-target="library" title="学习库" type="button"><i data-icon="library"></i><span>学习库</span></button>
+            <button id="notes-button" class="nav-item" data-workspace-target="notes" title="笔记" type="button"><i data-icon="note"></i><span>笔记</span></button>
+            <button id="teaching-arrangements-button" class="nav-item" data-workspace-target="teaching" title="教学安排" type="button"><i data-icon="teaching"></i><span>教学安排</span></button>
+
+            <button id="settings-button" class="nav-item" data-workspace-target="settings" title="设置" type="button"><i data-icon="settings"></i><span>设置</span></button>
+          </div>
+
+          <section class="conversation-library" aria-label="最近对话">
+            <div class="conversation-library-head"><strong>最近对话</strong></div><button id="new-conversation-button" hidden type="button" aria-label="开始新目标"></button>
+            <div id="conversation-list" class="conversation-list"></div>
+          </section>
+
+        </nav>
+
+        <main id="main-content" class="workspace-main" tabindex="-1">
+        <section id="learning-workspace" class="dashboard workspace-view" data-workspace-view="learn" aria-label="学习" tabindex="-1">
+          <section class="hero-card">
+            <div class="hero-copy"><span id="hero-greeting">你好，</span><h1>继续你的学习</h1></div>
+            <img class="hero-illustration" src="/assets/learning-welcome-flat.png" alt="" aria-hidden="true" decoding="async" />
+          </section>
+
+          <div class="dashboard-grid">
+            <aside class="route-card surface-card">
+              <header class="card-heading"><div><h2>学习路线</h2><p>基于真实状态，循序渐进</p></div></header>
+              <ol id="skill-route" class="skill-route"></ol>
+              <div id="route-materials" class="route-materials" hidden></div>
+            </aside>
+
+            <div class="center-column learning-stage surface-card">
+              <header class="learning-stage-header study-observer-header">
+                <div class="learning-stage-heading"><h2 id="workspace-title">和你的老师一起学习</h2><span id="header-task-info" class="header-task-info hidden"></span></div>
+                <section id="study-time-strip" class="study-observer" aria-label="摄像头观察与学习计时" data-observation="off">
+                  <details class="study-time-details">
+                    <summary class="study-observer-trigger" title="查看观察状态与学习计时">
+                      <svg class="study-observer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg><span class="study-observer-name">学习观察</span>
+                      <span data-study-compact-status role="status" aria-live="polite">未开启</span>
+                      <span class="study-header-time" data-study-header-time hidden>0:00</span>
+                      <span class="study-time-privacy" title="摄像头画面仅在你的设备处理，不展示、不上传、不保存。只同步观察状态与时间。"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><strong>画面不上传</strong></span>
+                      <svg class="study-observer-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 6 3 3 3-3"/></svg>
+                    </summary>
+                    <div class="study-time-panel" popover="manual" aria-label="学习观察设置"><header class="study-panel-header"><h3 data-study-panel-title>学习观察</h3><button type="button" class="study-time-toggle" data-study-toggle>开启摄像头观察</button></header>
+                      <p class="study-panel-status" data-study-status>摄像头观察未开启</p>
+                      <div class="study-time-values">
+                        <span>本任务专注<strong data-study-task-time>0:00</strong></span><span>本次专注<strong data-study-run-time>0:00</strong></span>
+                        <span>目标累计<strong data-study-goal-time>0:00</strong></span><span>等待老师<strong data-study-wait-time>0:00</strong></span>
+                      </div>
+                      <p class="study-privacy-note"><strong>画面仅在本机处理，不上传、不保存。</strong><br>只同步观察状态与时间。</p>
+                      <p>偏离、无人脸、持续闭眼或后台时暂停；等待老师单列。同任务换对话继续，任务变化另记。观察可能误判，时间不代表掌握。</p>
+                      <p data-study-error role="alert" hidden></p>
+                    </div>
+                  </details>
+
+                </section>
+                <div class="learning-content-tools">
+                <div id="learning-view-tabs" class="learning-view-tabs" role="tablist" aria-label="学习内容">
+                  <span class="learning-tab-indicator" aria-hidden="true"></span>
+                  <button id="conversation-toggle" type="button" role="tab" aria-selected="true" aria-controls="conversation-panel" tabindex="0"><i data-icon="chat"></i><span>对话</span></button>
+                  <button id="task-focus-toggle" type="button" role="tab" aria-selected="false" aria-controls="task-focus-card" tabindex="-1"><i data-icon="cards"></i><span>知识卡片</span><span id="cards-new-badge" class="cards-new-badge" aria-hidden="true" hidden>新</span></button>
+                  <span id="cards-new-status" class="cards-new-status" role="status" aria-live="polite" aria-atomic="true"></span>
+                </div>
+                <button id="assistant-entry" class="assistant-entry" type="button" aria-label="助教" aria-expanded="false" aria-controls="assistant-panel" title="展开助教，问清当前疑惑"><i data-icon="conversations"></i><span>助教</span></button>
+                </div>
+                <div id="connection-status" class="connection-pill" data-status="connecting" role="status"><span></span>正在连接</div>
+              </header>
+              <div class="learning-stage-viewport">
+                <section id="assistant-panel" class="assistant-panel" aria-label="助教答疑" hidden inert>
+                  <header class="assistant-heading"><div><h2>助教答疑</h2><span id="assistant-source" class="assistant-source">当前教学任务</span></div><button id="assistant-close" class="assistant-close" type="button" aria-label="收起助教，返回教学" title="返回教学"><i data-icon="close"></i></button></header>
+                  <p id="assistant-notice" class="assistant-notice">老师会参考这里的问答，了解你需要的帮助。</p>
+                  <div id="assistant-messages" class="assistant-messages" aria-live="polite" aria-label="助教问答"></div>
+                  <div class="assistant-composer-wrap">
+                    <div class="assistant-status-row"><p id="assistant-status" class="assistant-status" role="status" aria-live="polite"></p><button id="assistant-retry" class="assistant-retry" type="button" hidden>重试</button></div>
+                    <form id="assistant-composer" class="assistant-composer"><label class="assistant-sr-label" for="assistant-input">向助教提问</label><textarea id="assistant-input" rows="1" placeholder="哪一处还没理解？" aria-describedby="assistant-status"></textarea><button id="assistant-send" class="assistant-send" type="submit" aria-label="发送给助教"><span>发送</span><i data-icon="arrowUp"></i></button><button id="assistant-stop" class="assistant-stop" type="button" aria-label="停止助教回复" hidden><i data-icon="stop"></i></button></form>
+                  </div>
+                </section>
+
+                <div class="learning-stage-track">
+              <section id="conversation-panel" class="conversation-panel learning-pane" role="tabpanel" aria-labelledby="conversation-toggle">
+                <div id="active-recall-bar" class="active-recall-bar hidden" role="status"><span id="active-recall-progress"></span><button id="active-recall-skip" type="button">稍后再检查</button></div>
+                  <div id="messages" class="messages" aria-live="polite"></div>
+                <div id="error-banner" class="error-banner hidden" role="alert"><span id="error-text"></span><button id="retry-feedback-button" type="button" hidden>重新生成本次反馈</button><button id="retry-button" type="button" hidden>重试连接</button></div>
+                <details id="activity-panel" class="activity-panel" hidden><summary><span>老师在做什么</span><span class="activity-summary-meta"><span id="activity-count">0</span> 条活动</span></summary><div id="activity-list" class="activity-list"></div></details>
+                <div class="composer-wrap">
+                  <input id="material-file" type="file" accept=".pdf,.md,.txt,.docx,.pptx,.png,.jpg,.jpeg,.webp,.tiff,application/pdf,text/plain,text/markdown,image/*" hidden />
+                  <div id="composer-attachments" class="composer-attachments" hidden></div>
+                  <form id="composer" class="composer"><button id="materials-button" class="add-button" type="button" title="上传学习资料" aria-label="上传学习资料"><i data-icon="plus"></i></button><textarea id="message-input" rows="1" placeholder="说说你的想法，或者继续当前练习……" aria-label="学习消息" aria-describedby="composer-note voice-input-status"></textarea><button id="voice-input-button" class="voice-input-button" type="button" title="语音输入" aria-label="语音输入" aria-pressed="false"><i data-icon="microphone"></i></button><button id="send-button" class="send-button" type="submit" aria-label="发送"><span>发送</span><i data-icon="arrowUp"></i></button><button id="stop-button" class="stop-button hidden" type="button"><i data-icon="stop"></i><span>停止</span></button></form>
+                  <p id="voice-input-status" class="voice-input-status" role="status" aria-live="polite" hidden></p>
+                  <p id="composer-note" class="composer-note">支持自然语言、公式、代码或截图描述。按 Enter 发送，Shift + Enter 换行。</p>
+                </div>
+              </section>
+              <section id="task-focus-card" class="task-focus-card learning-pane" role="tabpanel" aria-labelledby="task-focus-toggle" aria-hidden="true" inert>
+                <div class="task-focus-content">
+                  <p id="task-kicker" class="learning-cards-description">回忆、理解与自检</p>
+                  <div id="knowledge-cards-panel" class="knowledge-cards-panel"></div>
+                </div>
+              </section>
+                </div>
+              </div>
+            </div>
+
+            <aside class="context-column">
+              <section id="skill-card" class="context-card surface-card"><div id="conversation-branches" class="skill-learning-records hidden" aria-label="本技能的学习记录"></div></section>
+              <section class="evidence-card surface-card"><header class="context-card-head"><h2>学习记录</h2></header><div id="evidence-list" class="evidence-list"></div></section>
+
+            </aside>
+            <aside id="assistant-dock" class="assistant-dock" aria-label="补充答疑" hidden></aside>
+          </div>
+
+          <nav id="mobile-surface-tabs" class="mobile-surface-tabs" aria-label="学习界面切换">
+            <button type="button" data-mobile-surface="learn"><i data-icon="chat"></i><span>学习</span></button>
+            <button type="button" data-mobile-surface="route"><i data-icon="route"></i><span>路线</span></button>
+            <button type="button" data-mobile-surface="records"><i data-icon="records"></i><span>记录</span></button>
+          </nav>
+        </section>
+<section id="learning-library-page" class="workspace-view workspace-page library-page" data-workspace-view="library" aria-labelledby="library-page-title" tabindex="-1" hidden>
+      <div class="page-heading"><div><h2 id="library-page-title">学习库</h2><p>看见知识的方向，也看见自己的成长。</p></div></div>
+      <div class="collection-toolbar"><label class="collection-search"><i data-icon="search"></i><input type="search" data-collection-search="library" placeholder="查找目标或知识点" aria-label="查找学习目标" /></label><select id="library-status-filter" aria-label="筛选学习目标"><option value="all">全部目标</option><option value="current">当前目标</option><option value="other">其他目标</option></select><span id="library-search-count" class="collection-count" role="status"></span></div><p id="library-search-empty" class="collection-empty" hidden>没有找到匹配的目标。试试书名、主题或知识点。</p>
+      <div id="learning-library-content" class="learning-library-content"></div>
+      </section>
+<section id="notes-page" class="workspace-view workspace-page notes-page" data-workspace-view="notes" aria-labelledby="notes-page-title" tabindex="-1" hidden>
+      <div class="page-heading"><div><h2 id="notes-page-title">我的笔记</h2><p>保存聊天摘录与自己的理解，随时查看原文或知识卡片。</p></div></div>
+      <div class="collection-toolbar"><label class="collection-search"><i data-icon="search"></i><input type="search" data-collection-search="notes" placeholder="查找笔记、问题或知识点" aria-label="查找笔记" /></label><select id="notes-sort" aria-label="笔记排序"><option value="updated">最近更新</option><option value="name">知识点名称</option></select><span id="notes-search-count" class="collection-count" role="status"></span></div><p id="notes-search-empty" class="collection-empty" hidden>没有找到匹配的笔记。换一个关键词试试。</p>
+      <div id="notes-content" class="notes-content"></div>
+    </section>
+<section id="teaching-arrangements-page" class="workspace-view workspace-page teaching-page" data-workspace-view="teaching" aria-labelledby="teaching-page-title" tabindex="-1" hidden>
+      <div class="page-heading"><div><h2 id="teaching-page-title">教学安排</h2><p>管理你的教学偏好、已确认的教法和技能插件。</p></div></div>
+    </section>
+<section id="provider-settings-page" class="workspace-view workspace-page settings-page" data-workspace-view="settings" aria-labelledby="settings-page-title" tabindex="-1" hidden>
+      <div class="page-heading"><div><h2 id="settings-page-title">设置</h2><p>配置你的教学模型、语音与资料检索。</p></div></div>
+      <div class="settings-tabs" role="tablist" aria-label="设置分类"><button id="settings-model-tab" type="button" role="tab" data-settings-pane="provider-settings-form" aria-controls="provider-settings-form">教学模型</button><button id="settings-speech-tab" type="button" role="tab" data-settings-pane="speech-settings" aria-controls="speech-settings">语音</button><button id="settings-retrieval-tab" type="button" role="tab" data-settings-pane="retrieval-settings" aria-controls="retrieval-settings">资料检索</button></div>
+      <form id="provider-settings-form">
+        <div class="current-provider-card"><span class="provider-status-dot" aria-hidden="true"></span><div><small>当前使用</small><strong id="current-provider-label">尚未配置</strong></div></div>
+        <div class="provider-settings-layout">
+          <aside class="provider-profile-panel" aria-label="已保存的模型配置">
+            <div class="provider-profile-heading"><strong>已保存配置</strong><button id="new-provider-profile-button" class="small-ghost-button" type="button"><i data-icon="plus"></i> 新建</button></div>
+            <div id="provider-profile-list" class="provider-profile-list"></div>
+          </aside>
+          <div class="provider-editor"><h3 class="settings-section-title">连接配置</h3><p class="settings-section-help">选择左侧配置进行编辑。密钥只保存在本机。</p>
+            <div class="settings-grid">
+              <label class="full-row"><span>配置名称</span><input id="profile-name-input" name="profileName" autocomplete="off" placeholder="例如：百炼 · Qwen Plus" /></label>
+              <label><span>模型服务商</span><input id="provider-input" name="provider" autocomplete="off" placeholder="例如 aliyun-bailian" required /></label>
+              <label><span>模型名称</span><input id="model-input" name="model" autocomplete="off" placeholder="例如 qwen-plus" required /></label>
+
+              <label class="full-row"><span>接口地址</span><input id="base-url-input" name="baseUrl" type="url" autocomplete="off" placeholder="https://api.example.com/v1" required /></label>
+              <label class="full-row"><span>API Key</span><input id="api-key-input" name="apiKey" type="password" autocomplete="new-password" placeholder="输入新 Key，留空则保留现有 Key" /><small id="api-key-state">尚未保存 API Key</small></label>
+            </div>
+            <details class="settings-advanced"><summary>高级选项 <span>推理强度与回复长度</span></summary><div class="settings-grid"><label class="full-row"><span>推理强度</span><select id="thinking-level-input" name="thinkingLevel">
+                <option value="off">模型默认（不发送推理参数）</option>
+                <option value="minimal">最少</option>
+                <option value="low">较低</option>
+                <option value="medium">中等</option>
+                <option value="high">较高</option>
+                <option value="xhigh">极高（部分模型）</option>
+                <option value="max">最高（部分模型）</option>
+              </select><small>只有模型和接口支持时才会生效；“测试连接”会使用当前选择验证参数。</small></label>
+<label class="full-row"><span>最大输出 Tokens</span><input id="max-output-tokens-input" name="maxOutputTokens" type="number" min="256" max="131072" step="256" value="32768" required /><small>推理 Token 与可见回答可能共享该预算。百炼推理模型建议从 32768 开始；数值越高只代表允许的上限，不会强制模型写满。</small></label></div></details>
+            <div id="provider-test-result" class="provider-test-result hidden" role="status"></div>
+          </div>
+        </div>
+        <div class="dialog-actions settings-actions"><p id="provider-save-status" role="status"></p><button id="delete-provider-profile-button" class="danger-ghost-button hidden" type="button">删除配置</button><button id="test-provider-button" class="ghost-button" type="button">测试连接</button><button id="activate-provider-profile-button" class="ghost-button hidden" type="button">切换到此配置</button><button id="save-provider-button" class="primary-button" type="submit">保存并使用</button></div>
+      </form>
+      <details id="speech-settings" class="speech-settings">
+        <summary>语音设置</summary><h3 class="settings-section-title">语音输入与朗读</h3>
+        <p>语音输入适用于所有学习；语言示范由老师按需提供，点击播放才生成声音。录音和示范文字发送给百炼，原录音不长期保存，转写后可修改再发送。</p>
+        <form id="speech-settings-form">
+          <label class="speech-enabled"><input type="checkbox" name="enabled" /> 启用语音输入与示范播放</label>
+          <div class="settings-grid">
+            <label class="full-row"><span>使用已保存的百炼配置</span><select name="profileId"><option value="">请先在上方保存百炼模型配置</option></select><small>语音使用这份配置，不随教学模型切换。</small></label>
+            <label><span>服务地域</span><select name="region"><option value="beijing">北京</option><option value="singapore">新加坡</option></select><small>须与这份配置的密钥地域一致。</small></label>
+            <label><span>示范音色</span><input name="voice" value="Cherry" required /></label>
+          </div>
+          <details class="speech-models"><summary>语音模型</summary><div class="settings-grid"><label><span>转写模型</span><input name="asrModel" value="qwen3-asr-flash" required /></label><label><span>朗读模型</span><input name="ttsModel" value="qwen3-tts-flash" required /></label></div></details>
+          <div class="settings-actions"><p id="speech-settings-message" role="status" aria-live="polite"></p><button class="primary-button" type="submit">保存语音设置</button></div>
+        </form>
+      </details>
+      <details id="retrieval-settings" class="retrieval-panel">
+        <summary>知识检索设置</summary><h3 class="settings-section-title">资料理解与检索</h3>
+        <p class="settings-section-help">索引和图谱保存在本机；启用云端功能后，相关文字或图片会发送给所选模型。</p><details class="settings-data-notice"><summary>查看数据发送与保存说明</summary><p>分块文字与问题发送给向量模型，候选片段发送给精排模型；启用视觉解析时，PDF 页图和文档图片发送给视觉模型，图谱抽取会发送正文片段。派生结果保留出处，机器识别需核对原图。</p></details>
+        <form id="retrieval-settings-form">
+          <label class="retrieval-toggle"><input type="checkbox" name="enabled" /><span><strong>云端语义检索与精排</strong><small>结合问题查找相关文字片段，精排候选结果。保存后生效。</small></span></label>
+          <label class="retrieval-toggle"><input type="checkbox" name="visionEnabled" /><span><strong>图片、表格与公式</strong><small>解析资料中的图像内容，结果仍需核对原图。保存后生效。</small></span></label>
+          <label class="retrieval-toggle"><input type="checkbox" name="graphEnabled" /><span><strong>概念关系与图谱召回</strong><small>从资料正文提取关系，为查找提供关联线索。保存后生效。</small></span></label>
+          <div class="settings-grid">
+            <label class="full-row"><span>使用已保存的模型凭据</span><select name="profileId"></select></label>
+            <label><span>向量模型</span><input name="embeddingModel" required /></label>
+            <label><span>向量维度</span><select name="dimensions"><option>64</option><option>128</option><option>256</option><option>512</option><option>768</option><option selected>1024</option><option>1536</option><option>2048</option></select></label>
+            <label><span>精排模型</span><input name="rerankModel" required /></label>
+          </div>
+          <details><summary>高级配置</summary><div class="settings-grid">
+            <label><span>视觉模型</span><input name="visionModel" placeholder="留空沿用所选档案模型" /></label>
+            <label><span>图谱抽取模型</span><input name="extractionModel" placeholder="留空沿用所选档案模型" /></label>
+            <label class="full-row"><span>向量接口地址</span><input type="url" name="embeddingUrl" required /></label>
+            <label class="full-row"><span>精排接口地址</span><input type="url" name="rerankUrl" required /></label>
+            <label><span>最低精排相关性</span><input type="number" name="minimumRerankScore" min="0" max="1" step="0.01" /></label>
+          </div></details>
+          <div class="settings-actions"><p id="retrieval-settings-message" role="status"></p><button class="primary-button" type="submit">保存检索设置</button></div>
+        </form>
+      </details>
+    </section>
+<section id="conversation-library-page" class="workspace-view workspace-page conversations-page" data-workspace-view="conversations" aria-labelledby="conversations-page-title" tabindex="-1" hidden>
+      <div class="page-heading"><div><h2 id="conversations-page-title">管理对话</h2><p>删除学习目标会将它的对话、资料与学习记录一起移入回收区。</p></div></div>
+      <div class="conversation-page-toolbar"><button id="dialog-new-conversation-button" class="primary-button" type="button"><i data-icon="plus"></i> 开始新目标</button></div>
+      <div id="conversation-page-list" class="conversation-page-list"></div>
+      <p id="conversation-management-status" class="management-status" role="status" aria-live="polite"></p>
+      <details id="conversation-recycle" class="conversation-recycle">
+        <summary><span>回收区</span><span id="conversation-recycle-count" class="recycle-count">…</span></summary>
+        <p class="recycle-description">恢复后可接着原进度学习。旧版回收的聊天仅恢复聊天，学习目标仍保留。</p>
+        <div id="conversation-recycle-list" class="recycle-list" aria-live="polite"></div>
+      </details>
+    </section>
+<section id="materials-page" class="workspace-view workspace-page materials-page" data-workspace-view="materials" aria-labelledby="materials-page-title" tabindex="-1" hidden>
+        <div class="page-heading"><div><h2 id="materials-page-title">学习资料</h2><p>查看原始资料，找到出处，再回到课堂。</p></div></div><details class="material-format-help"><summary>支持格式与资料处理说明</summary><p>支持 PDF、Markdown、TXT、Word、PowerPoint 和 PNG/JPG/WEBP/TIFF 图片，单份最多 100 MiB。可点击输入框旁的 + 上传，也可在输入框直接粘贴图片或文件。文字在本机解析；启用云端检索后，相关文字和页图会发送给模型，用于视觉识别、图谱、语义检索与精排。</p></details>
+        <p id="material-scope-label" class="page-scope"></p><div class="materials-section-head"><h3>已上传资料</h3><span id="materials-count"></span></div>
+        <div id="materials-list" class="learning-library-content materials-list"></div>
+        <details id="retrieval-diagnostics" class="retrieval-panel">
+          <summary>查看最近检索</summary>
+          <p>检查问题、候选片段、排序和实际阅读位置，帮助定位未找到或回答不准确的原因。</p>
+          <label>选择记录 <select id="retrieval-trace-select" aria-label="最近检索记录"></select></label>
+          <div id="retrieval-trace-content" aria-live="polite"></div>
+        </details>
+        <div id="material-preview" class="material-preview" aria-live="polite" hidden>
+          <div class="material-preview-head"><strong id="material-preview-title">内容预览</strong><button type="button" id="close-material-preview" class="ghost-button">收起预览</button></div>
+        <p id="material-preview-status" role="status" data-status="ready"></p>
+        <div id="material-preview-text" class="message-content material-preview-content"></div><div id="material-preview-assets"></div>
+        </div>
+      </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="new-goal-dialog" class="goal-dialog">
+      <form method="dialog"><h2>开始新的学习目标？</h2><p id="new-goal-copy">当前路线会保留为历史，但新的目标需要你明确确认。</p><div class="dialog-actions"><button value="cancel" class="ghost-button">取消</button><button id="confirm-new-goal" value="confirm" class="primary-button">开始新目标</button></div></form>
+    </dialog>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

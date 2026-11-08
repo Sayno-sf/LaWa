@@ -1,0 +1,343 @@
+{
+  "body": "# 木桩越远，影子为什么越长？\n\n傍晚的小路上，灯亮了。要找到影子的末端，可以沿一束光走一遍。看那条刚好擦过木桩顶端的光线，它再往前，在哪里碰到地面？\n\n![路灯和木桩](lawa-figure:street)\n\n把小路想成水平的，把灯想成离地 3 米的一个发光点。木桩竖直，高 1 米。光能照到桩后较远的地面，桩脚旁边的一段却被挡住了。两者的交界，正是你刚才找到的点。\n\n![移动木桩观察影长](lawa-figure:measure)\n\n从灯到桩顶，光线下降 2 米。从桩顶到地面，还要下降 1 米。因为是同一条直线，后一段的水平距离也是前一段的一半。桩离灯的垂足 4 米时，影长便是 2 米。你可以把木桩拉到这个位置，再沿光线核对一次。",
+  "figures": [
+    {
+      "key": "street",
+      "alt": "傍晚的小路上，一束光擦过木桩顶端，细长的投影顺着地面伸展。",
+      "caption": "影子的边界落在擦过桩顶的光线与地面的交点。",
+      "source": "课堂原创插画 · 点光源和平地示意",
+      "view": [
+        600,
+        222
+      ],
+      "ink": [
+        [
+          "rect",
+          {
+            "x": 0,
+            "y": 0,
+            "width": 600,
+            "height": 222,
+            "fill": "#f5f2e7"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M0 146 Q36 131 70 144 T145 140 Q196 120 242 139 T342 130 Q397 115 432 133 T528 126 Q564 114 600 124 L600 174 L0 174 Z",
+            "fill": "#dfe3d5",
+            "stroke": "none",
+            "stroke-width": 0,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M0 161 Q59 150 115 157 T231 153 Q310 139 366 154 T486 144 Q545 135 600 140 L600 190 L0 190 Z",
+            "fill": "#c3ceba",
+            "stroke": "none",
+            "stroke-width": 0,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M0 181 Q140 173 251 183 Q400 163 600 174 L600 222 L0 222 Z",
+            "fill": "#e0d4b9",
+            "stroke": "none",
+            "stroke-width": 0,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M520 170 Q521 143 511 130 M518 152 Q496 149 494 135 M519 145 Q537 139 543 120 M514 136 Q520 119 511 112",
+            "fill": "none",
+            "stroke": "#8a9883",
+            "stroke-width": 2,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M513 143 Q492 134 486 113 Q507 115 513 143 M524 138 Q522 114 542 106 Q541 124 524 138",
+            "fill": "#9bad92",
+            "stroke": "none",
+            "stroke-width": 0,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M93 40 L319 190 L244 190 L244 140 Z",
+            "fill": "#c1bcab",
+            "stroke": "none",
+            "stroke-width": 0,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M51 190 L54 184 L59 184 L61 61 Q61 36 86 34 L92 34",
+            "fill": "none",
+            "stroke": "#344540",
+            "stroke-width": 4,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M42 191 Q58 187 71 191",
+            "fill": "none",
+            "stroke": "#86765b",
+            "stroke-width": 2,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M78 30 L86 24 L94 24 L103 30 L99 34 L81 34 Z",
+            "fill": "#596e62",
+            "stroke": "#344540",
+            "stroke-width": 1.5,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M81 34 L99 34 L96 47 L86 47 Z",
+            "fill": "#f0d582",
+            "stroke": "#344540",
+            "stroke-width": 1.5,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "circle",
+          {
+            "cx": 92,
+            "cy": 40,
+            "r": 3,
+            "fill": "#e3c36b"
+          }
+        ],
+        [
+          "line",
+          {
+            "x1": 92,
+            "y1": 40,
+            "x2": 320,
+            "y2": 190,
+            "stroke": "#b7774c",
+            "stroke-width": 1.6
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M241 190 L241 142 L246 138 L248 190 Z",
+            "fill": "#9b7856",
+            "stroke": "#344540",
+            "stroke-width": 1.8,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M247 191 L320 188 L313 195 L246 196 Z",
+            "fill": "#827e69",
+            "stroke": "none",
+            "stroke-width": 0,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ],
+        [
+          "path",
+          {
+            "d": "M103 202 Q147 205 183 201 M332 186 L357 185 M402 194 Q421 189 439 191",
+            "fill": "none",
+            "stroke": "#ac9b7c",
+            "stroke-width": 1.2,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "measure",
+      "alt": "在平地上移动一米高的木桩。直线从三米高的灯穿过桩顶，地面上的影子随着木桩移动而改变长度。",
+      "caption": "拖动木桩的位置，观察影长与到灯垂足的距离。灯、桩顶和影子末端始终在同一条直线上。",
+      "view": [
+        600,
+        220
+      ],
+      "axis": {
+        "label": "桩到灯垂足",
+        "min": 1,
+        "max": 6,
+        "unit": " 米",
+        "readings": [
+          {
+            "label": "桩高",
+            "expr": "1",
+            "unit": " 米"
+          },
+          {
+            "label": "影长",
+            "expr": "x/2",
+            "unit": " 米"
+          }
+        ]
+      },
+      "ink": [
+        [
+          "rect",
+          {
+            "x": 0,
+            "y": 0,
+            "width": 600,
+            "height": 220,
+            "fill": "#f4f3eb"
+          }
+        ],
+        [
+          "line",
+          {
+            "x1": 34,
+            "y1": 180,
+            "x2": 562,
+            "y2": 180,
+            "stroke": "muted",
+            "stroke-width": 1
+          }
+        ],
+        [
+          "line",
+          {
+            "x1": 64,
+            "y1": 30,
+            "x2": 64,
+            "y2": 180,
+            "stroke": "ink",
+            "stroke-width": 3
+          }
+        ],
+        [
+          "circle",
+          {
+            "cx": 64,
+            "cy": 30,
+            "r": 6,
+            "fill": "#e3c36b"
+          }
+        ],
+        [
+          "line",
+          {
+            "x1": 64,
+            "y1": 30,
+            "x2": "=64+75*x",
+            "y2": 180,
+            "stroke": "#b7774c",
+            "stroke-width": 2
+          }
+        ],
+        [
+          "rect",
+          {
+            "x": "=62+50*x",
+            "y": 130,
+            "width": 4,
+            "height": 50,
+            "fill": "leaf"
+          }
+        ],
+        [
+          "line",
+          {
+            "x1": "=64+50*x",
+            "y1": 183,
+            "x2": "=64+75*x",
+            "y2": 183,
+            "stroke": "ink",
+            "stroke-width": 5
+          }
+        ],
+        [
+          "circle",
+          {
+            "cx": "=64+50*x",
+            "cy": 130,
+            "r": 3,
+            "fill": "leaf"
+          }
+        ],
+        [
+          "text",
+          {
+            "x": 17,
+            "y": 101,
+            "font-size": 13,
+            "fill": "ink"
+          },
+          "3 米"
+        ],
+        [
+          "text",
+          {
+            "x": 24,
+            "y": 204,
+            "font-size": 13,
+            "fill": "ink"
+          },
+          "平地"
+        ],
+        [
+          "text",
+          {
+            "text-anchor": "end",
+            "x": "=57+50*x",
+            "y": 159,
+            "fill": "ink",
+            "font-size": 13
+          },
+          "1 米"
+        ],
+        [
+          "text",
+          {
+            "x": "=64+62.5*x",
+            "y": 207,
+            "text-anchor": "middle",
+            "fill": "ink",
+            "font-size": 13
+          },
+          "影子"
+        ]
+      ]
+    }
+  ]
+}

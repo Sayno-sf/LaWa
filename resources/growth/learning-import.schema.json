@@ -1,0 +1,411 @@
+{
+  "$defs": {
+    "ImportClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "skill_ref": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skill Ref"
+        },
+        "statement": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "claimed_level": {
+          "anyOf": [
+            {
+              "enum": [
+                "IDENTIFY",
+                "EXPLAIN",
+                "APPLY",
+                "ADAPT",
+                "TRANSFER"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Claimed Level"
+        }
+      },
+      "required": [
+        "statement"
+      ],
+      "title": "ImportClaim",
+      "type": "object"
+    },
+    "ImportGoal": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Ref",
+          "type": "string"
+        },
+        "goal_profile": {
+          "$ref": "#/$defs/ImportGoalProfile"
+        },
+        "skills": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ImportSkill"
+              },
+              "maxItems": 200,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "按原对话首次实际学习的先后排列，不按教材逻辑、主题、名称或ref重排；回顾不重复建点",
+          "title": "Skills"
+        },
+        "self_reports": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ImportClaim"
+              },
+              "maxItems": 200,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "保留自述在原对话中的先后顺序",
+          "title": "Self Reports"
+        },
+        "work_samples": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ImportSample"
+              },
+              "maxItems": 100,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "保留真实作答的发生顺序；未知日期不编造",
+          "title": "Work Samples"
+        }
+      },
+      "required": [
+        "ref",
+        "goal_profile"
+      ],
+      "title": "ImportGoal",
+      "type": "object"
+    },
+    "ImportGoalProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "goal_description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Goal Description",
+          "type": "string"
+        },
+        "background_summary": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "未提供",
+          "description": "有依据的最近学习位置、未解决问题与续学意愿，再概括此前经历；未知保留，不是掌握证明",
+          "title": "Background Summary"
+        },
+        "desired_outcome": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Desired Outcome",
+          "type": "string"
+        },
+        "learning_domain": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "",
+          "title": "Learning Domain"
+        }
+      },
+      "required": [
+        "goal_description",
+        "desired_outcome"
+      ],
+      "title": "ImportGoalProfile",
+      "type": "object"
+    },
+    "ImportSample": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Ref",
+          "type": "string"
+        },
+        "skill_ref": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Skill Ref",
+          "type": "string"
+        },
+        "question": {
+          "anyOf": [
+            {
+              "maxLength": 16000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "原题未知时为null；不能为通过校验编造问题",
+          "title": "Question"
+        },
+        "learner_answer": {
+          "maxLength": 16000,
+          "minLength": 1,
+          "title": "Learner Answer",
+          "type": "string"
+        },
+        "assistance_level": {
+          "anyOf": [
+            {
+              "enum": [
+                "UNKNOWN",
+                "WITH_HELP",
+                "WITH_HINT",
+                "WITH_REFERENCE",
+                "INDEPENDENT",
+                "TRANSFERRED"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "UNKNOWN",
+          "title": "Assistance Level"
+        },
+        "feedback": {
+          "anyOf": [
+            {
+              "maxLength": 16000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "",
+          "title": "Feedback"
+        },
+        "context": {
+          "anyOf": [
+            {
+              "maxLength": 16000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "",
+          "title": "Context"
+        },
+        "occurred_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurred At"
+        }
+      },
+      "required": [
+        "ref",
+        "skill_ref",
+        "learner_answer"
+      ],
+      "title": "ImportSample",
+      "type": "object"
+    },
+    "ImportSkill": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Ref",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "",
+          "title": "Description"
+        },
+        "topic": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "新导出请填写简短明确的所属主题，如Tensor基础、训练循环；不是另一个目标。缺失仅为旧版兼容，导入后可调整",
+          "title": "Topic"
+        }
+      },
+      "required": [
+        "ref",
+        "name"
+      ],
+      "title": "ImportSkill",
+      "type": "object"
+    },
+    "ImportSource": {
+      "additionalProperties": false,
+      "properties": {
+        "platform": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Platform",
+          "type": "string"
+        },
+        "conversation_title": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "",
+          "title": "Conversation Title"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "media_descriptions": {
+          "anyOf": [
+            {
+              "items": {
+                "maxLength": 2000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "图片或音频只保留来源说明，不据此评审",
+          "title": "Media Descriptions"
+        }
+      },
+      "required": [
+        "platform"
+      ],
+      "title": "ImportSource",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "lawa.learning-import/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/ImportSource"
+    },
+    "goals": {
+      "description": "同一学习主线合为一个目标，不同目标按原对话首次实际学习顺序排列",
+      "items": {
+        "$ref": "#/$defs/ImportGoal"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Goals",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "source",
+    "goals"
+  ],
+  "title": "LearningImport",
+  "type": "object"
+}

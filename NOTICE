@@ -1,0 +1,19 @@
+LaWa (Learn Anything With Agent)
+Copyright 2026 LaWa contributors
+
+LaWa source code is distributed under the Apache License, Version 2.0.
+
+The optional browser camera feature uses Google's MediaPipe Tasks Vision
+runtime and the Face Landmarker model from its upstream distribution.
+See third_party/mediapipe/README.md for the exact model source and checksum,
+and third_party/mediapipe/LICENSE for the runtime license.
+
+The welcome illustration and lamplight sample were generated for LaWa.
+The bundled lamplight print was generated with Qwen Image via Alibaba Cloud
+Model Studio and is included as a teaching example.
+
+RapidOCR and PaddleOCR historical attribution is retained under
+third_party/rapidocr/. This distribution does not include their model weights.
+
+Dependencies installed through npm or PyPI retain their own licenses and
+notices in their distributions. The project license does not replace them.

@@ -1,0 +1,140 @@
+{
+  "schema_version": "lawa.lesson.v1",
+  "decision": "animate",
+  "title": "为什么先减3再除以2",
+  "target": "理解 2x+3=11 中先减去3、再除以2的等价变形依据",
+  "prerequisites": [
+    "知道等号表示两边相等",
+    "知道对等式两边同时进行相同运算可保持相等",
+    "知道除以非零数有意义"
+  ],
+  "assumptions": [
+    "变量名固定为x，系数和常数在模板允许范围内。",
+    "天平只表达两边相等，不按质量比例仿真。",
+    "先减3再除以2是便于观察的一种等价变形顺序，不是唯一顺序。",
+    "只解释一元一次方程的加减和除以非零数的等价变形。"
+  ],
+  "recipe": "linear_balance",
+  "parameters": {
+    "variable": "x",
+    "original": [
+      2,
+      3,
+      0,
+      11
+    ]
+  },
+  "scenes": [
+    {
+      "id": "start",
+      "caption": "先看原式：左边是2个x加3，右边是11。",
+      "why": "本例中，两边减去同一个数、再除以同一个非零数，等式仍保持相等；并不是说每一步都必须两边同时改，单边化简也可能合法。",
+      "duration_s": 8,
+      "state": {
+        "equation": [
+          2,
+          3,
+          0,
+          11
+        ],
+        "operation": "start",
+        "operand": 0
+      }
+    },
+    {
+      "id": "subtract",
+      "caption": "两边同时减去3，左边只剩下2个x。",
+      "why": "两边减去同一个数，差仍然相等，天平保持平衡。",
+      "duration_s": 9,
+      "state": {
+        "equation": [
+          2,
+          0,
+          0,
+          8
+        ],
+        "operation": "subtract",
+        "operand": 3
+      }
+    },
+    {
+      "id": "balance",
+      "caption": "这时左边是2个x，右边剩下8。",
+      "why": "两份x合起来等于8；要把两份合起来的关系看成一份x是多少，就可以把两边都平均分成相同的两份。",
+      "duration_s": 8,
+      "state": {
+        "equation": [
+          2,
+          0,
+          0,
+          8
+        ],
+        "operation": "hold",
+        "operand": 0
+      }
+    },
+    {
+      "id": "divide",
+      "caption": "把两边都平均分成两份，每份就是一个x。",
+      "why": "两边同时除以2，商仍相等，所以一份对应右边一份。",
+      "duration_s": 9,
+      "state": {
+        "equation": [
+          1,
+          0,
+          0,
+          4
+        ],
+        "operation": "divide",
+        "operand": 2
+      }
+    },
+    {
+      "id": "result",
+      "caption": "右边每份是4，因此x对应4。",
+      "why": "2x=8两边除以2得到x=4，表示一份的大小。",
+      "duration_s": 7,
+      "state": {
+        "equation": [
+          1,
+          0,
+          0,
+          4
+        ],
+        "operation": "hold",
+        "operand": 0
+      }
+    }
+  ],
+  "checkpoint": {
+    "after_scene": "balance",
+    "prompt": "两边已经化成2个x等于8，x的值应是多少？",
+    "metric": "solution",
+    "options": [
+      {
+        "id": "a",
+        "value": 3
+      },
+      {
+        "id": "b",
+        "value": 4
+      },
+      {
+        "id": "c",
+        "value": 5
+      }
+    ],
+    "branches": {
+      "correct": {
+        "caption": "对，x=4；代回原式，2×4+3=11，两边相等。",
+        "why": "把8平均分成两份，每份是4；代回原式也能检查等式成立。",
+        "replay_scene": "divide"
+      },
+      "incorrect": {
+        "caption": "预测不符：左边是2个x，右边是8，需要看两份合起来是8时一份是多少。",
+        "why": "可以比较“两份合起来8”与“一份x”的关系，再代回原式检查；回看两边同时减3后的状态。",
+        "replay_scene": "balance"
+      }
+    }
+  }
+}

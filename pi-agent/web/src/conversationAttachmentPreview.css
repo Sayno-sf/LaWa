@@ -1,0 +1,8 @@
+.conversation-attachment-preview { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #f7f9fc; min-width: 0; }
+.conversation-attachment-preview > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.conversation-attachment-preview > header strong { min-width: 0; overflow-wrap: anywhere; }
+.attachment-preview-status { margin: 8px 0; color: var(--muted); font-size: 12px; }
+.attachment-preview-content { max-height: min(65vh, 720px); overflow: auto; line-height: 1.7; }
+.attachment-preview-content img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.attachment-preview-pages { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 12px; }
+.attachment-preview-pages[hidden] { display: none; }

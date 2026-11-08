@@ -1,0 +1,67 @@
+.learning-route-stage { position: relative; display: block; padding: 12px 0 15px; list-style: none; }
+.learning-route-stage:not(:last-child)::after { position: absolute; top: 40px; bottom: 0; left: 14px; width: 1px; content: ""; background: var(--line); }
+.learning-route-stage-heading { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 0 3px; }
+.learning-route-stage-heading > div { min-width: 0; }
+.learning-route-stage-number { position: relative; z-index: 1; display: grid; place-items: center; flex: 0 0 23px; width: 23px; height: 23px; border: 1px solid #c9d7e9; border-radius: 50%; background: white; color: #5d7391; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.learning-route-stage .learning-route-stage-name { display: block; color: #334b6b; font-size: 13px; font-weight: 600; line-height: 1.55; overflow-wrap: anywhere; }
+.learning-route-stage .learning-route-stage-caption { display: block; margin-top: 3px; color: #526682; font-size: 11px; line-height: 1.5; }
+.is-current-stage > .learning-route-stage-heading .learning-route-stage-number { border-color: var(--blue); color: var(--blue); }
+.is-current-stage > .learning-route-stage-heading .learning-route-stage-name { color: var(--blue-dark); }
+.is-current-stage > .learning-route-stage-heading .learning-route-stage-caption { color: #177378; }
+.learning-route-stage .learning-route-skills { position: relative; z-index: 1; margin: 10px 0 0 24px; padding: 0; list-style: none; }
+.learning-route-stage .learning-route-skills > li { display: block; margin: 0; padding: 0; border: 0; }
+.learning-route-skill { display: flex; align-items: flex-start; gap: 8px; width: 100%; margin: 2px 0; padding: 8px 7px; border: 0; border-radius: 8px; background: transparent; color: #334b6b; text-align: left; font: inherit; cursor: pointer; }
+.learning-route-skill:hover { background: #f2f7fd; }
+.learning-route-skill.is-selected { background: #eaf3ff; }
+.learning-route-skill:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.learning-route-skill-marker { display: grid; place-items: center; flex: 0 0 14px; width: 14px; height: 14px; margin-top: 3px; border: 1px solid #a5b7ce; border-radius: 50%; background: white; }
+.learning-route-skill-marker > svg { width: 11px; height: 11px; }
+.learning-route-skill.is-mastered .learning-route-skill-marker { border-color: var(--blue); background: var(--blue); color: white; }
+.learning-route-skill.is-current .learning-route-skill-marker { border-color: var(--blue); box-shadow: inset 0 0 0 3px white; background: var(--blue); }
+.learning-route-skill-copy { min-width: 0; }
+.learning-route-skill .learning-route-skill-copy > strong { display: block; color: #334b6b; font-size: 12px; font-weight: 600; line-height: 1.6; overflow-wrap: anywhere; }
+.learning-route-skill .learning-route-skill-copy > small { display: block; margin-top: 2px; color: #526682; font-size: 11px; line-height: 1.5; }
+.learning-route-skill.is-current .learning-route-skill-copy > small { color: #177378; }
+.learning-route-stage-number > svg { width: 13px; height: 13px; }
+
+/* 路线分支沿用目录的线、字与留白，不引入独立卡片或第二套强调色。 */
+.route-node-with-branches { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; gap: var(--space-2); }
+.route-node-with-branches > .learning-route-skill { min-width: 0; }
+.route-side-branches { min-width: 0; margin-top: 2px; }
+.route-side-branches > summary { display: flex; align-items: center; gap: var(--space-2); min-height: 36px; font-size: 12px; line-height: 1.5; color: var(--text-secondary); cursor: pointer; list-style: none; }
+.route-side-branches > summary::-webkit-details-marker { display: none; }
+.route-branch-connector { display: flex; flex: none; color: var(--accent); }
+.route-branch-connector .ui-icon { width: 24px; height: 16px; }
+.route-side-chevron { display: flex; margin-left: auto; }
+.route-side-chevron .ui-icon { width: 14px; height: 14px; }
+.route-side-branches[open] > summary .route-side-chevron .ui-icon { transform: rotate(180deg); }
+.route-side-branches > summary:hover { color: var(--accent); }
+.route-branch-list { margin-left: var(--space-2); padding-left: var(--space-3); border-left: 1px solid var(--line); }
+.learning-route-branch { margin: 0 0 var(--space-3); }
+.learning-route-branch > summary { display: flex; align-items: flex-start; gap: var(--space-2); padding-block: var(--space-2); cursor: pointer; list-style: none; }
+.learning-route-branch > summary::-webkit-details-marker { display: none; }
+.route-branch-chevron { display: flex; margin-top: 3px; color: var(--text-secondary); }
+.route-branch-chevron .ui-icon { width: 14px; height: 14px; transform: rotate(-90deg); }
+.learning-route-branch[open] > summary .ui-icon { transform: none; }
+.route-branch-title { min-width: 0; }
+.route-branch-title strong { display: block; font-size: 13px; font-weight: 500; line-height: 1.7; color: var(--text-primary); overflow-wrap: anywhere; }
+.route-branch-title small { display: block; margin-top: var(--space-1); font-size: 12px; line-height: 1.5; color: var(--text-secondary); }
+.learning-route-branch.is-active > summary .route-branch-title small { color: var(--accent); }
+.learning-route-branch > summary:hover strong { color: var(--accent); }
+.route-branch-content { padding: 0 0 var(--space-1) 22px; font-size: 13px; line-height: 1.75; overflow-wrap: anywhere; }
+.route-branch-records { display: grid; justify-items: start; gap: var(--space-1); }
+.route-branch-records button { text-align: left; line-height: 1.7; }
+.route-branch-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-1); }
+.route-branch-actions .ghost-button { padding: 6px 12px; border-radius: 6px; font: inherit; color: var(--accent); }
+.route-branch-actions .ghost-button:hover { background: var(--accent-soft); }
+.route-branch-content .text-button:hover, .route-active-branch button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.route-active-branch { display: inline-flex; align-items: center; gap: var(--space-3); white-space: nowrap; color: var(--text-secondary); font-size: 13px; }
+.route-active-branch button { padding: 6px 0; border: 0; background: transparent; color: var(--accent); font: inherit; cursor: pointer; }
+.route-active-branch button:disabled { opacity: .55; cursor: default; }
+.route-task-info .header-task-label { display: none; }
+.study-observer-header .learning-stage-heading:has(.route-task-info) { display: block; order: 2; }
+.learning-stage-heading:has(.route-task-info) > h2 { display: none; }
+@media (min-width: 821px) {
+  .route-directory:has(.route-side-branches) { width: min(440px, calc(100vw - 100px)); }
+  .route-directory .route-node-with-branches .learning-route-skill-copy > strong { display: block; overflow: visible; }
+}

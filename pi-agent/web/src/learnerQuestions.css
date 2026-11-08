@@ -1,0 +1,53 @@
+.learner-questions { max-width: 72ch; margin: 16px auto 20px; padding: 0 4px; color: var(--ink); }
+.learner-question-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 12px; color: #465b7a; }
+.learner-question-progress button { display: inline-grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 6px; background: transparent; color: #465b7a; cursor: pointer; }
+.learner-question-progress button:hover { background: #f1f6ff; }
+.learner-question-progress button .ui-icon { transform: rotate(180deg); }
+.learner-question-intro { margin: 0 0 16px; color: #465b7a; font-size: 14px; line-height: 1.6; }
+.learner-questions fieldset { border: 0; margin: 0; padding: 0 0 22px; min-width: 0; }
+.learner-questions legend { padding: 0; margin-bottom: 10px; font-size: 16px; font-weight: 650; line-height: 1.6; overflow-wrap: anywhere; }
+.learner-question-mode { margin-left: 8px; color: #465b7a; font-size: 12px; font-weight: 400; white-space: nowrap; }
+.learner-options { display: grid; gap: 6px; }
+.learner-option { display: flex; align-items: start; gap: 10px; padding: 10px 12px; border: 1px solid #dce8f7; border-radius: 8px; cursor: pointer; color: #233d67; background: #fff; }
+.learner-option:hover { background: #f7f9fc; }
+.learner-option:has(input:checked) { border-color: var(--blue); background: #f1f6ff; }
+.learner-option:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
+.learner-option input { flex: 0 0 auto; margin: 4px 0 0; width: 16px; height: 16px; accent-color: var(--blue); }
+.learner-option > span { min-width: 0; overflow-wrap: anywhere; }
+.learner-option strong { display: block; font-size: 14px; line-height: 1.6; font-weight: 500; }
+.learner-option small { display: block; margin-top: 2px; color: #465b7a; font-size: 12px; line-height: 1.6; }
+.learner-other { display: grid; gap: 5px; margin-top: 10px; color: #465b7a; font-size: 12px; }
+.learner-other textarea { resize: vertical; min-height: 40px; max-height: 160px; width: 100%; padding: 9px 10px; border: 1px solid #dce8f7; border-radius: 6px; background: #fff; color: var(--ink); font-size: 14px; line-height: 1.5; }
+.learner-other textarea::placeholder { color: #465b7a; }
+.learner-questions fieldset:disabled { opacity: .65; }
+.learner-questions fieldset:disabled label { cursor: default; }
+.learner-decision fieldset { padding-bottom: 8px; }
+.learner-decision-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.learner-decision-action { min-height: 40px; font: inherit; font-size: 14px; cursor: pointer; }
+.learner-decision-action.primary-button:hover { background: var(--blue-dark); }
+.learner-decision-action:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.learner-decision .learner-other { margin-top: 16px; }
+.learner-mastery-review { padding: 20px 22px; border: 1px solid var(--border-subtle); border-radius: 12px; background: var(--surface); }
+.learner-mastery-review legend { margin-bottom: 10px; color: var(--text-secondary); }
+.learner-mastery-title { margin: 0 0 8px; color: var(--text-primary); font-size: 20px; font-weight: 600; line-height: 1.45; }
+.learner-questions.learner-mastery-review .learner-question-prompt { margin-bottom: 8px; }
+.learner-mastery-note { margin: 0 0 18px; color: var(--text-secondary); font-size: 13px; line-height: 1.65; }
+.learner-mastery-saved { margin: 0 0 12px; color: var(--text-primary); font-size: 15px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.learner-mastery-skip { padding: 8px 4px; border: 0; background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.learner-mastery-skip:hover { color: var(--accent-hover); }
+.learner-mastery-feedback { margin-top: 20px; padding-top: 2px; border-top: 1px solid var(--border-subtle); }
+.learner-mastery-feedback[hidden] { display: none; }
+.learner-mastery-review .learner-other textarea { background: var(--surface-input); border-color: var(--border-control); }
+.learner-mastery-review .secondary-button { padding: 9px 12px; border: 1px solid var(--border-subtle); border-radius: 6px; background: var(--surface-input); color: var(--text-primary); font: inherit; font-size: 14px; }
+.learner-mastery-review .secondary-button:hover { border-color: var(--border-control); background: var(--surface-muted); }
+.learner-mastery-review fieldset:disabled .learner-decision-action { cursor: default; }
+.learner-question-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.learner-question-actions > span { flex: 1 1 240px; font-size: 12px; line-height: 1.5; }
+.learner-question-actions > button { min-height: 40px; white-space: nowrap; }
+.learner-question-actions > button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.learner-question-set-title { margin: 0 0 8px; font-size: 15px; line-height: 1.4; }
+@media (max-width: 520px) { .learner-questions { margin: 12px 0 16px; } .learner-option { padding: 9px 10px; } }
+
+.learner-questions .learner-question-prompt { font-size: 16px; font-weight: 400; line-height: 1.75; margin: 4px 0 20px; }
+.learner-questions legend { font-size: 13px; font-weight: 500; color: var(--muted); }
+.learner-other { font-size: 13px; }

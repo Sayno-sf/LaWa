@@ -1,0 +1,42 @@
+.learning-skills {
+  max-width: 780px;
+  margin: 0 0 var(--space-8);
+  color: var(--text-primary);
+}
+.learning-skills h3 { margin: 0 0 var(--space-2); font-size: 18px; font-weight: 600; }
+.learning-skills-help { max-width: 70ch; margin: 0 0 var(--space-4); color: var(--text-secondary); font-size: 13px; line-height: 1.8; }
+.learning-skills-list { margin: 0; padding: 0; list-style: none; }
+.learning-skills-heading { display:flex; align-items:baseline; justify-content:space-between; gap:var(--space-4); margin-bottom:var(--space-2); }
+.learning-skill-actions { display:flex; align-items:center; gap:var(--space-6); }
+.learning-skill-action { border:0; border-radius:0; background:transparent; color:var(--text-secondary); font:inherit; font-size:13px; min-height:36px; padding:4px 0; cursor:pointer; }
+.learning-skill-action:hover { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+.learning-skill-action:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+.learning-skill-action:disabled { opacity:.5; cursor:wait; }
+.learning-skills-builtins { margin-top:var(--space-3); font-size:13px; color:var(--text-secondary); }
+.learning-skills-builtins summary { cursor:pointer; padding:var(--space-2) 0; }
+.learning-skills-builtins li { padding:var(--space-2) 0; }
+.learning-skills-replacement { display:flex; gap:var(--space-4); }
+.learning-skills-replacement[hidden], .learning-skills-builtins[hidden] { display:none; }
+.learning-skill { padding: var(--space-4) 0; border-bottom: 1px solid var(--border-subtle); }
+.learning-skill:first-child { border-top: 1px solid var(--border-subtle); }
+.learning-skill-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.learning-skill h4 { margin: 0; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.learning-skill-availability { color: var(--accent); font-size: 12px; white-space: nowrap; }
+.learning-skill p { max-width: 70ch; margin: var(--space-2) 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.learning-skills-feedback { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.learning-skills-status { margin: var(--space-2) 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.8; }
+.learning-skills-status:empty { display: none; }
+.learning-skills-status[data-tone="error"] { color: var(--danger); }
+.learning-skills-feedback button { min-height: 36px; padding: var(--space-2) 0; border: 0; border-radius: 0; color: var(--accent); font-size: 13px; }
+.learning-skills-feedback button:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+.learning-skills-feedback button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* Position and contrast both communicate state; text remains a secondary cue. */
+.learning-skill-availability[role="switch"] { position:relative; display:inline-flex; align-items:center; min-height:36px; padding:4px 58px 4px 0; border:0; background:transparent; color:var(--text-secondary); cursor:pointer; }
+.learning-skill-availability[role="switch"]::before { content:""; position:absolute; right:0; top:50%; width:44px; height:26px; transform:translateY(-50%); border-radius:99px; background:#d7dce1; border:1px solid #b8c1cb; box-sizing:border-box; transition:background .16s,border-color .16s; }
+.learning-skill-availability[role="switch"]::after { content:""; position:absolute; right:21px; top:50%; width:18px; height:18px; transform:translateY(-50%); border-radius:50%; background:#fff; box-shadow:0 1px 3px #1b2d4530; transition:right .16s; }
+.learning-skill-availability[aria-checked="true"] { color:var(--accent); }
+.learning-skill-availability[aria-checked="true"]::before { background:#405b7c; border-color:#405b7c; }
+.learning-skill-availability[aria-checked="true"]::after { right:5px; }
+.learning-skill-availability:focus-visible { outline:2px solid var(--accent); outline-offset:4px; border-radius:6px; }
+.learning-skill-availability:disabled { opacity:.5; cursor:wait; }
+@media (prefers-reduced-motion:reduce) { .learning-skill-availability::before,.learning-skill-availability::after { transition:none!important; } }

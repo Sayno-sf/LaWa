@@ -1,0 +1,40 @@
+/* 教学安排页的「自定义提示词」：沿用页面原有蓝白卡片、细边框与按钮样式。 */
+.teaching-instructions {
+  max-width: 780px;
+  margin: 0 0 26px;
+  padding: 18px 20px;
+  border: 1px solid var(--line, #e4e9f1);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink, #233148);
+}
+.teaching-instructions h3 { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+.teaching-instructions-help { margin: 0 0 14px; color: var(--muted, #58677d); font-size: 13px; line-height: 1.7; }
+.teaching-instructions-field { display: grid; gap: 8px; }
+.teaching-instructions-field > span { font-size: 13px; font-weight: 500; }
+.teaching-instructions textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 132px;
+  padding: 12px;
+  border: 1px solid #dce3ee;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink, #233148);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.75;
+  resize: vertical;
+}
+.teaching-instructions textarea:focus-visible { outline: 2px solid var(--blue-dark, #2856bb); outline-offset: 2px; }
+.teaching-instructions-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.teaching-instructions-actions button { min-height: 36px; font-size: 13px; }
+.teaching-instructions-actions button:disabled { opacity: .5; cursor: default; }
+.teaching-instructions-count { margin-left: auto; color: var(--muted, #58677d); font-size: 12px; font-variant-numeric: tabular-nums; }
+.teaching-instructions-status { min-height: 1.6em; margin: 8px 0 0; color: var(--muted, #58677d); font-size: 12px; line-height: 1.6; }
+.teaching-instructions-status[data-tone="ok"] { color: #176d66; }
+.teaching-instructions-status[data-tone="error"] { color: #a32a32; }
+@media (max-width: 520px) {
+  .teaching-instructions { padding: 14px; }
+  .teaching-instructions-count { margin-left: 0; }
+}
