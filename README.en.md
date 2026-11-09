@@ -15,6 +15,8 @@ cd LaWa
 
 **Windows.** Double-click [Start-LaWa.bat](Start-LaWa.bat). On a fresh checkout it installs the project dependencies and builds the workspace. Once both local services are ready, it opens the workspace in your browser.
 
+Setup downloads and verifies the local model for camera observation. Model settings start empty. Enable speech and cloud retrieval when you need them.
+
 **Terminal.** From the repository root, run the following command. Use `python3` in place of `python` if that is how your system exposes Python.
 
 ```sh

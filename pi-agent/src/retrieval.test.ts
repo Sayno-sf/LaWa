@@ -9,6 +9,7 @@ import { RetrievalRuntime } from "./retrieval/runtime.js";
 import { RetrievalSettingsStore, BailianRetrievalModels, refineQueryText } from "./retrieval/settings.js";
 import { SourceReadBudget } from "./retrieval/tools.js";
 import { LocalRetrievalIndex } from "./retrieval/store.js";
+import { testRetrievalSettings } from "./retrieval/testSettings.js";
 import type { Models, SourceBackend, SourceChunk, SourceDescriptor } from "./retrieval/types.js";
 
 function descriptor(id: string, goal = "goal-a"): SourceDescriptor {
@@ -61,7 +62,7 @@ async function fixture() {
     model: "chat", baseUrl: "https://example.test/compatible-mode/v1" }] }));
   await writeFile(secrets, JSON.stringify({ apiKeys: { p: "test-secret-do-not-log" } }));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), profiles, secrets);
-  await settings.save({ ...await settings.get(), dimensions: 64 });
+  await settings.save(testRetrievalSettings);
   const backend = new FixtureBackend();
   const calls = { embed: 0, rerank: 0, failEmbed: false, failRerank: false, delayed: false };
   const models: Models = {
@@ -90,6 +91,26 @@ async function fixture() {
   return { directory, backend, settings, calls, models, factory, runtime,
     async close() { await runtime.stop(); await rm(directory, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); } };
 }
+test("first retrieval read stays blank and does not write or adopt an existing model profile", async t => {
+  const directory = await mkdtemp(join(tmpdir(), "lawa-retrieval-defaults-"));
+  t.after(() => rm(directory, {recursive: true, force: true}));
+  const profiles = join(directory, "providers.json");
+  await writeFile(profiles, JSON.stringify({activeProfileId: "p", profiles: [
+    {id: "p", provider: "aliyun-bailian", model: "chat", baseUrl: "https://example.test/v1"},
+  ]}));
+  const settings = new RetrievalSettingsStore(join(directory, "settings.json"), profiles, join(directory, "secrets.json"));
+  const fresh = await settings.publicSettings();
+  assert.equal(fresh.enabled, false);
+  assert.equal(fresh.visionEnabled, false);
+  assert.equal(fresh.graphEnabled, false);
+  assert.deepEqual([fresh.profileId, fresh.embeddingModel, fresh.embeddingUrl, fresh.rerankModel, fresh.rerankUrl,
+    fresh.visionModel, fresh.extractionModel], ["", "", "", "", "", "", ""]);
+  assert.equal(fresh.profiles[0]?.id, "p", "saved teaching profiles remain available to select");
+  await assert.rejects(readFile(settings.path), {code: "ENOENT"});
+  await settings.save(testRetrievalSettings);
+  assert.deepEqual(await settings.get(), {...testRetrievalSettings, visionEnabled: true, graphEnabled: true,
+    visionModel: "", extractionModel: ""});
+});
 test("native hybrid search enforces Goal/draft isolation and records actual read locators", async () => {
   const f = await fixture();
   try {

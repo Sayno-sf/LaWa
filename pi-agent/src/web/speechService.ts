@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 
 import type { SpeechProviderCredentials } from "./providerSettings.js";
 import {ProviderSettingsError} from "./providerSettingsErrors.js";
-import { DEFAULT_SPEECH_SETTINGS, type SpeechSettings } from "./speechSettingsTypes.js";
+import { DEFAULT_SPEECH_SETTINGS, speechRegionForHost, type PublicSpeechSettings, type SpeechSettings } from "./speechSettingsTypes.js";
 import type { SpeechConfigurationStatus } from "../speechTypes.js";
 import {readSpeechEvents,SpeechStreamError} from "./speechStream.js";
 
@@ -21,7 +21,7 @@ export class SpeechServiceError extends Error {
 export interface SpeechAudio { audio: Buffer; contentType: "audio/wav" }
 export interface SpeechText { text: string; language: "en" | "zh" | "auto" }
 export interface SpeechServiceLike {
-  getPublicSettings(): Promise<SpeechSettings>;
+  getPublicSettings(): Promise<PublicSpeechSettings>;
   getTeachingStatus?(): Promise<SpeechConfigurationStatus>;
   saveSettings(input: unknown): Promise<SpeechSettings>;
   transcribe(audio: Uint8Array, options?: { signal?: AbortSignal }): Promise<{ text: string }>;
@@ -55,14 +55,12 @@ function normalizeSettings(value: unknown): SpeechSettings {
 function endpoints(credentials: SpeechProviderCredentials, settings: SpeechSettings): { asr: string; tts: string } {
   let url: URL;
   try { url = new URL(credentials.baseUrl); } catch { throw new SpeechServiceError("INVALID_SPEECH_PROFILE", "这个档案的百炼地址无效。", 422); }
-  const host = url.hostname.toLowerCase();
-  const beijing = host === "dashscope.aliyuncs.com" || /^[a-z0-9-]+\.cn-beijing\.maas\.aliyuncs\.com$/.test(host);
-  const singapore = host === "dashscope-intl.aliyuncs.com" || /^[a-z0-9-]+\.ap-southeast-1\.maas\.aliyuncs\.com$/.test(host);
+  const region = speechRegionForHost(url.hostname);
   if (url.protocol !== "https:" || url.username || url.password || url.port || url.search || url.hash
-    || !/^\/compatible-mode\/v1\/?$/.test(url.pathname) || (!beijing && !singapore)) {
+    || !/^\/compatible-mode\/v1\/?$/.test(url.pathname) || !region) {
     throw new SpeechServiceError("INVALID_SPEECH_PROFILE", "语音只支持官方百炼 HTTPS 模型档案。", 422);
   }
-  if ((settings.region === "beijing") !== beijing) throw new SpeechServiceError("SPEECH_REGION_MISMATCH", "语音地域与这个模型档案的地域不一致。", 422);
+  if (settings.region !== region) throw new SpeechServiceError("SPEECH_REGION_MISMATCH", "语音地域与这个模型档案的地域不一致。", 422);
   // 聊天档案可能使用专属 MaaS 域名；Qwen3-TTS 应走语音地域对应的 DashScope 接入域名。
   const ttsHost = settings.region === "beijing" ? "dashscope.aliyuncs.com" : "dashscope-intl.aliyuncs.com";
   return {
@@ -140,13 +138,17 @@ function allowedAudioUrl(value: unknown, region: SpeechSettings["region"]): URL 
 
 export class SpeechService implements SpeechServiceLike {
   private settings: SpeechSettings = { ...DEFAULT_SPEECH_SETTINGS };
+  private hasSavedSettings = false;
   private loaded?: Promise<void>;
   private readonly cache = new Map<string, SpeechAudio>();
   private cacheBytes = 0;
   private cacheRevision = "";
   constructor(private readonly options: SpeechServiceOptions) {}
 
-  async getPublicSettings(): Promise<SpeechSettings> { await this.load(); return { ...this.settings }; }
+  async getPublicSettings(): Promise<PublicSpeechSettings> {
+    await this.load();
+    return this.hasSavedSettings ? { ...this.settings } : { ...this.settings, saved: false };
+  }
 
   /** 只读本地配置，复用播放前的凭据/地域校验；不发起 ASR/TTS 或连接探测。
    * 失败仅返回状态，不将异常、档案身份、地址或 Key 送入模型上下文。
@@ -170,7 +172,10 @@ export class SpeechService implements SpeechServiceLike {
     const temporary = `${this.options.settingsPath}.${randomUUID()}.tmp`;
     await writeFile(temporary, `${JSON.stringify(next, null, 2)}\n`, { mode: 0o600 });
     await rename(temporary, this.options.settingsPath);
-    this.settings = next; this.clearCache(); return this.getPublicSettings();
+    this.settings = next;
+    this.hasSavedSettings = true;
+    this.clearCache();
+    return { ...next };
   }
 
   async transcribe(source: Uint8Array, options: { signal?: AbortSignal } = {}): Promise<{ text: string }> {
@@ -251,7 +256,10 @@ export class SpeechService implements SpeechServiceLike {
   private get fetch(): typeof fetch { return this.options.fetch ?? fetch; }
   private async load(): Promise<void> {
     this.loaded ??= (async () => {
-      try { this.settings = normalizeSettings(JSON.parse(await readFile(this.options.settingsPath, "utf8"))); }
+      try {
+        this.settings = normalizeSettings(JSON.parse(await readFile(this.options.settingsPath, "utf8")));
+        this.hasSavedSettings = true;
+      }
       catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw new SpeechServiceError("INVALID_SPEECH_SETTINGS", "语音设置文件无效，请检查后重试。", 422); }
     })();
     return this.loaded;

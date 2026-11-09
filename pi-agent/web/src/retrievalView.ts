@@ -75,19 +75,24 @@ export function mountRetrievalViews() {
     loading = true;
     void api<Settings>("/api/web/retrieval-settings").then(config => {
       const profiles = field("profileId") as HTMLSelectElement;
-      profiles.replaceChildren(...config.profiles.map(profile => {
+      const unselected = document.createElement("option");
+      unselected.value = "";
+      unselected.textContent = "请选择已保存的模型配置";
+      profiles.replaceChildren(unselected, ...config.profiles.map(profile => {
         const option = document.createElement("option");
         option.value = profile.id; option.textContent = profile.provider + " · " + profile.model;
         return option;
       }));
-      for (const name of ["profileId", "embeddingModel", "dimensions", "embeddingUrl", "rerankModel", "rerankUrl", "minimumRerankScore"]) {
+      profiles.value = config.profiles.some(profile => profile.id === config.profileId) ? config.profileId : "";
+      for (const name of ["embeddingModel", "dimensions", "embeddingUrl", "rerankModel", "rerankUrl", "minimumRerankScore"]) {
         field(name).value = String(config[name as keyof Settings]);
       }
       (field("enabled") as HTMLInputElement).checked = config.enabled;
       for (const name of ["visionEnabled", "graphEnabled"] as const) (field(name) as HTMLInputElement).checked = config[name] !== false;
       for (const name of ["visionModel", "extractionModel"] as const) field(name).value = config[name] ?? "";
       loaded = true;
-      saveState.markClean();
+      if (config.embeddingModel) saveState.markClean();
+      else saveState.markClean("未配置 · 填写后保存", "initial");
     }).catch(error => { saveState.error(error instanceof Error ? error.message : String(error)); }).finally(() => { loading = false; });
   });
   form.addEventListener("submit", event => {

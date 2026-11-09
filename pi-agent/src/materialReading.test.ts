@@ -132,7 +132,6 @@ test("actual Kernel deletion records are discovered without a Gateway event and 
   for (let i = 0; i < 100 && (await client.metadata(id, scope)).parse_status !== "ready"; i++) await new Promise(done => setTimeout(done, 20));
   const directory = join(temporary, "delete-protocol-index"), backend = new KernelSourceBackend(client.baseUrl);
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), join(temporary, "unused-profiles.json"), join(temporary, "unused-secrets.json"));
-  await settings.save({...await settings.get(), enabled: false, dimensions: 64});
   const models = {embed: async (texts: string[]) => texts.map(() => [1, ...Array(63).fill(0)]),
     rerank: async (_query: string, texts: string[]) => texts.map((_, index) => ({index, score: 1}))};
   const runtime = new RetrievalRuntime(directory, backend, settings, () => models);

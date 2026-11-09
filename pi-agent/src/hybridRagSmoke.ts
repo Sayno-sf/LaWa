@@ -64,7 +64,9 @@ try {
   await copyFile(join(root, "data", "provider-secrets.json"), join(temporary, "secrets.json"));
   const settings = new RetrievalSettingsStore(join(temporary, "retrieval", "settings.json"),
     join(temporary, "providers.json"), join(temporary, "secrets.json"));
-  const config = await settings.get();
+  const configured = new RetrievalSettingsStore(join(root, "data", "retrieval", "settings.json"), settings.providerPath, settings.secretsPath);
+  const config = await configured.get();
+  assert.ok(config.enabled, "Save and enable retrieval settings before running this real-provider smoke.");
   await settings.save({ ...config, minimumRerankScore: 0 }); // record all scores before calibration
   report.models = { embedding: config.embeddingModel, dimensions: config.dimensions, rerank: config.rerankModel };
   runtime = new RetrievalRuntime(join(temporary, "retrieval"), new KernelSourceBackend(apiUrl), settings);

@@ -5,6 +5,7 @@ import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {SourceGraphStore, validateGraph} from "./retrieval/graph.js";
 import {BailianRetrievalModels, RetrievalSettingsStore} from "./retrieval/settings.js";
+import {testRetrievalSettings} from "./retrieval/testSettings.js";
 import {RetrievalRuntime} from "./retrieval/runtime.js";
 import {KernelSourceBackend} from "./retrieval/backend.js";
 import type {Candidate, Models, SourceBackend, SourceChunk, SourceDescriptor} from "./retrieval/types.js";
@@ -26,7 +27,7 @@ test("recycling a Goal aborts its in-flight visual model and prevents publicatio
   const directory = await mkdtemp(join(tmpdir(), "lawa-visual-recycle-"));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), join(directory, "providers.json"), join(directory, "secrets.json"));
   await writeFile(join(directory, "providers.json"), JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", graphEnabled: false, dimensions: 64});
+  await settings.save({...testRetrievalSettings, graphEnabled: false});
   const material = {...source("pdf"), visual_count: 1};
   let sources = [material], publications = 0, analyses = 0;
   let entered!: () => void;
@@ -62,7 +63,7 @@ test("completed visual jobs stop planning and fetching chunks across syncs and r
   const directory = await mkdtemp(join(tmpdir(), "lawa-visual-idle-"));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), join(directory, "providers.json"), join(directory, "secrets.json"));
   await writeFile(join(directory, "providers.json"), JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", graphEnabled: false, dimensions: 64});
+  await settings.save({...testRetrievalSettings, graphEnabled: false});
   let sources = [{...source("pdf"), visual_count: 10}, {...source("txt"), visual_count: 0}];
   let catalogs = 0;
   const calls = {plan: 0, chunks: 0, visual: 0};
@@ -116,7 +117,7 @@ test("partial visual publication preserves retry backoff and resumes after resta
   const directory = await mkdtemp(join(tmpdir(), "lawa-visual-backoff-"));
   await writeFile(join(directory, "providers.json"), JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), join(directory, "providers.json"), join(directory, "secrets.json"));
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", graphEnabled: false, dimensions: 64});
+  await settings.save({...testRetrievalSettings, graphEnabled: false});
   let s = {...source("pdf"), visual_count: 4}, completed = 0, fail = true, plans = 0, analyses = 0;
   const backend: SourceBackend = {
     catalog: async () => ({sources: [s], next_offset: null, catalog_version: s.version}),
@@ -149,7 +150,7 @@ test("large visual jobs rotate files, resume their cursor and do not block graph
   const directory = await mkdtemp(join(tmpdir(), "lawa-visual-queue-"));
   await writeFile(join(directory, "providers.json"), JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), join(directory, "providers.json"), join(directory, "secrets.json"));
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", dimensions: 64});
+  await settings.save(testRetrievalSettings);
   let sources = [{...source("large"), visual_count: 9}, {...source("small"), visual_count: 1}];
   const completed = new Map<string, number>(); let analyses = 0;
   const makeChunk = (s: SourceDescriptor) => chunk(s, s.name === "large" ? "太阳风撞击磁层，扰动磁层的形状。" : "磁层中的粒子进入大气，形成极光。");
@@ -235,7 +236,7 @@ test("runtime persists graph cursor, validates paths, retries failure and remove
   const provider = join(directory, "providers.json"), secrets = join(directory, "secrets.json");
   await writeFile(provider, JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), provider, secrets);
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", dimensions: 64});
+  await settings.save(testRetrievalSettings);
   let sources = [source("first"), source("second")], fail = true;
   let graphCalls = 0;
   const makeChunks = (s: SourceDescriptor) => s.name === "first"

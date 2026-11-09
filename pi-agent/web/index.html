@@ -197,9 +197,9 @@
           </aside>
           <div class="provider-editor"><h3 class="settings-section-title">连接配置</h3><p class="settings-section-help">选择左侧配置进行编辑。密钥只保存在本机。</p>
             <div class="settings-grid">
-              <label class="full-row"><span>配置名称</span><input id="profile-name-input" name="profileName" autocomplete="off" placeholder="例如：百炼 · Qwen Plus" /></label>
-              <label><span>模型服务商</span><input id="provider-input" name="provider" autocomplete="off" placeholder="例如 aliyun-bailian" required /></label>
-              <label><span>模型名称</span><input id="model-input" name="model" autocomplete="off" placeholder="例如 qwen-plus" required /></label>
+              <label class="full-row"><span>配置名称</span><input id="profile-name-input" name="profileName" autocomplete="off" placeholder="给这组配置起个名字" /></label>
+              <label><span>模型服务商</span><input id="provider-input" name="provider" autocomplete="off" required /></label>
+              <label><span>模型名称</span><input id="model-input" name="model" autocomplete="off" placeholder="填写服务商提供的模型 ID" required /></label>
 
               <label class="full-row"><span>接口地址</span><input id="base-url-input" name="baseUrl" type="url" autocomplete="off" placeholder="https://api.example.com/v1" required /></label>
               <label class="full-row"><span>API Key</span><input id="api-key-input" name="apiKey" type="password" autocomplete="new-password" placeholder="输入新 Key，留空则保留现有 Key" /><small id="api-key-state">尚未保存 API Key</small></label>
@@ -213,7 +213,7 @@
                 <option value="xhigh">极高（部分模型）</option>
                 <option value="max">最高（部分模型）</option>
               </select><small>只有模型和接口支持时才会生效；“测试连接”会使用当前选择验证参数。</small></label>
-<label class="full-row"><span>最大输出 Tokens</span><input id="max-output-tokens-input" name="maxOutputTokens" type="number" min="256" max="131072" step="256" value="32768" required /><small>推理 Token 与可见回答可能共享该预算。百炼推理模型建议从 32768 开始；数值越高只代表允许的上限，不会强制模型写满。</small></label></div></details>
+<label class="full-row"><span>最大输出 Tokens</span><input id="max-output-tokens-input" name="maxOutputTokens" type="number" min="256" max="131072" step="256" placeholder="留空使用默认上限" /><small>推理和可见回答可能共享这个上限。</small></label></div></details>
             <div id="provider-test-result" class="provider-test-result hidden" role="status"></div>
           </div>
         </div>
@@ -226,10 +226,11 @@
           <label class="speech-enabled"><input type="checkbox" name="enabled" /> 启用语音输入与示范播放</label>
           <div class="settings-grid">
             <label class="full-row"><span>使用已保存的百炼配置</span><select name="profileId"><option value="">请先在上方保存百炼模型配置</option></select><small>语音使用这份配置，不随教学模型切换。</small></label>
-            <label><span>服务地域</span><select name="region"><option value="beijing">北京</option><option value="singapore">新加坡</option></select><small>须与这份配置的密钥地域一致。</small></label>
-            <label><span>示范音色</span><input name="voice" value="Cherry" required /></label>
+            <label><span>服务地域</span><select name="region"><option value="">未选择</option><option value="beijing">北京</option><option value="singapore">新加坡</option></select><small>留空时按所选百炼地址判断地域。</small></label>
+            <label><span>示范音色</span><input name="voice" placeholder="例如 Cherry" /></label>
           </div>
-          <details class="speech-models"><summary>语音模型</summary><div class="settings-grid"><label><span>转写模型</span><input name="asrModel" value="qwen3-asr-flash" required /></label><label><span>朗读模型</span><input name="ttsModel" value="qwen3-tts-flash" required /></label></div></details>
+          <details class="speech-models"><summary>语音模型</summary><div class="settings-grid"><label><span>转写模型</span><input name="asrModel" placeholder="例如 qwen3-asr-flash" /></label><label><span>朗读模型</span><input name="ttsModel" placeholder="例如 qwen3-tts-flash" /></label></div></details>
+          <p class="settings-section-help">保存时，留空的音色和语音模型使用示例值。</p>
           <div class="settings-actions"><p id="speech-settings-message" role="status" aria-live="polite"></p><button class="primary-button" type="submit">保存语音设置</button></div>
         </form>
       </details>
@@ -242,15 +243,15 @@
           <label class="retrieval-toggle"><input type="checkbox" name="graphEnabled" /><span><strong>概念关系与图谱召回</strong><small>从资料正文提取关系，为查找提供关联线索。保存后生效。</small></span></label>
           <div class="settings-grid">
             <label class="full-row"><span>使用已保存的模型凭据</span><select name="profileId"></select></label>
-            <label><span>向量模型</span><input name="embeddingModel" required /></label>
+            <label><span>向量模型</span><input name="embeddingModel" placeholder="填写向量模型 ID" required /></label>
             <label><span>向量维度</span><select name="dimensions"><option>64</option><option>128</option><option>256</option><option>512</option><option>768</option><option selected>1024</option><option>1536</option><option>2048</option></select></label>
-            <label><span>精排模型</span><input name="rerankModel" required /></label>
+            <label><span>精排模型</span><input name="rerankModel" placeholder="填写精排模型 ID" required /></label>
+            <label class="full-row"><span>向量接口地址</span><input type="url" name="embeddingUrl" placeholder="https://api.example.com/v1/embeddings" required /></label>
+            <label class="full-row"><span>精排接口地址</span><input type="url" name="rerankUrl" placeholder="https://api.example.com/v1/rerank" required /></label>
           </div>
           <details><summary>高级配置</summary><div class="settings-grid">
             <label><span>视觉模型</span><input name="visionModel" placeholder="留空沿用所选档案模型" /></label>
             <label><span>图谱抽取模型</span><input name="extractionModel" placeholder="留空沿用所选档案模型" /></label>
-            <label class="full-row"><span>向量接口地址</span><input type="url" name="embeddingUrl" required /></label>
-            <label class="full-row"><span>精排接口地址</span><input type="url" name="rerankUrl" required /></label>
             <label><span>最低精排相关性</span><input type="number" name="minimumRerankScore" min="0" max="1" step="0.01" /></label>
           </div></details>
           <div class="settings-actions"><p id="retrieval-settings-message" role="status"></p><button class="primary-button" type="submit">保存检索设置</button></div>

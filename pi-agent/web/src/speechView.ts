@@ -1,5 +1,6 @@
 import {FormSaveState} from "./formSaveState";
 import { icon } from "./icons";
+import { DEFAULT_SPEECH_SETTINGS, speechRegionForHost, type PublicSpeechSettings, type SpeechSettings } from "../../src/web/speechSettingsTypes";
 
 export interface SpeechComponent {
   id: string;
@@ -9,14 +10,7 @@ export interface SpeechComponent {
   sourceSessionId: string;
   entryId: string;
 }
-export interface SpeechSettings {
-  enabled: boolean;
-  profileId: string | null;
-  region: "beijing" | "singapore";
-  asrModel: string;
-  ttsModel: string;
-  voice: string;
-}
+export type { SpeechSettings } from "../../src/web/speechSettingsTypes";
 interface SpeechProfile { id: string; name: string; provider: string; baseUrl: string; hasApiKey: boolean; }
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
@@ -133,7 +127,8 @@ export class SpeechPlayer {
 }
 
 export class SpeechSettingsView {
-  settings: SpeechSettings = { enabled: false, profileId: null, region: "beijing", asrModel: "qwen3-asr-flash", ttsModel: "qwen3-tts-flash", voice: "Cherry" };
+  settings: SpeechSettings = { ...DEFAULT_SPEECH_SETTINGS };
+  private hasSavedSettings = false;
   private profiles: SpeechProfile[] = [];
   private loaded = false;
   private loading: Promise<void> | null = null;
@@ -157,17 +152,36 @@ export class SpeechSettingsView {
     if (selected && !profiles.some(profile => profile.id === selected)) select.add(new Option("已保存的语音配置（请核对）", selected));
     select.value = selected;
   }
+  private renderSettings(): void {
+    (this.form.elements.namedItem("enabled") as HTMLInputElement).checked = this.settings.enabled;
+    for (const name of ["region", "asrModel", "ttsModel", "voice"] as const) {
+      (this.form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value = this.hasSavedSettings ? this.settings[name] : "";
+    }
+    this.renderProfiles();
+  }
+  private defaultRegion(profileId: string | null): SpeechSettings["region"] {
+    const profile = this.profiles.find(item => item.id === profileId);
+    if (!profile) return DEFAULT_SPEECH_SETTINGS.region;
+    try {
+      return speechRegionForHost(new URL(profile.baseUrl).hostname) ?? DEFAULT_SPEECH_SETTINGS.region;
+    } catch {
+      return DEFAULT_SPEECH_SETTINGS.region;
+    }
+  }
   async load(): Promise<void> {
     if (this.loading) return this.loading;
     this.loading = (async () => {
       try {
         const response = await fetch("/api/web/speech-settings");
         if (!response.ok) throw new Error("暂时无法读取语音设置，文字学习仍可继续。");
-        this.settings = { ...this.settings, ...await response.json() as SpeechSettings };
+        const { saved, ...settings } = await response.json() as PublicSpeechSettings;
+        this.settings = settings;
+        this.hasSavedSettings = saved !== false;
         this.loaded = true;
-        (this.form.elements.namedItem("enabled") as HTMLInputElement).checked = this.settings.enabled;
-        for (const name of ["region", "asrModel", "ttsModel", "voice"] as const) (this.form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value = this.settings[name];
-        this.renderProfiles(); this.saveState.markClean(); this.onChange();
+        this.renderSettings();
+        if (this.hasSavedSettings) this.saveState.markClean();
+        else this.saveState.markClean("尚未保存语音设置", "initial");
+        this.onChange();
       } catch (error) { this.saveState.error(error instanceof Error ? error.message : "语音设置读取失败，请稍后再打开。"); }
     })().finally(() => { this.loading = null; });
     return this.loading;
@@ -175,10 +189,14 @@ export class SpeechSettingsView {
   private async save(): Promise<void> {
     if (this.saveState.busy || !this.loaded) return;
     const data = new FormData(this.form);
+    const profileId = String(data.get("profileId") ?? "") || null;
+    const region = data.get("region");
+    const modelField = (name: "asrModel" | "ttsModel" | "voice") =>
+      String(data.get(name) ?? "").trim() || DEFAULT_SPEECH_SETTINGS[name];
     const settings: SpeechSettings = {
-      enabled: data.get("enabled") === "on", profileId: String(data.get("profileId") ?? "") || null,
-      region: data.get("region") === "singapore" ? "singapore" : "beijing",
-      asrModel: String(data.get("asrModel") ?? "").trim(), ttsModel: String(data.get("ttsModel") ?? "").trim(), voice: String(data.get("voice") ?? "").trim(),
+      enabled: data.get("enabled") === "on", profileId,
+      region: region === "beijing" || region === "singapore" ? region : this.defaultRegion(profileId),
+      asrModel: modelField("asrModel"), ttsModel: modelField("ttsModel"), voice: modelField("voice"),
     };
     if (settings.enabled && !settings.profileId) { this.saveState.error("请选择已保存的百炼配置，再启用语音。"); return; }
     this.beforeSave();
@@ -186,7 +204,10 @@ export class SpeechSettingsView {
     try {
       const response = await fetch("/api/web/speech-settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(settings) });
       if (!response.ok) { const body = await response.json().catch(() => ({})) as { detail?: string }; throw new Error(typeof body.detail === "string" ? body.detail : "语音设置未能保存，请重试。"); }
-      this.settings = await response.json() as SpeechSettings; this.loaded = true; this.onChange();
+      this.settings = await response.json() as SpeechSettings;
+      this.hasSavedSettings = true;
+      this.renderSettings();
+      this.onChange();
       this.saveState.success(this.settings.enabled ? "已保存 · 语音已启用" : "已保存 · 语音已关闭");
     } catch (error) { this.saveState.error(error instanceof Error ? error.message : "语音设置未能保存，请重试。"); }
 

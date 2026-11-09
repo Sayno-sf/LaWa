@@ -113,6 +113,7 @@ async function checkCamera() {
   await real.page.waitForTimeout(5500); assert.equal((await summary(second.sessionId)).taskFocusedMs, 0);
   await real.page.locator("[data-study-toggle]").click(); await real.page.locator('[data-study-toggle]:has-text("开启摄像头观察")').waitFor();
   await real.context.close(); console.log("real browser model + local WASM + no-face pause: passed");
+  if (process.argv.includes("--model-only")) return;
   const scripted = await pageWithObservation(true); const { page } = scripted; const packets: object[] = [];
   page.on("request", request => { if (request.url().endsWith("/api/web/study-time") && request.method() === "POST") packets.push(request.postDataJSON()); });
   await page.locator("[data-study-toggle]").click(); await page.waitForFunction(() => document.querySelector("[data-study-status]")?.textContent === "专注中");

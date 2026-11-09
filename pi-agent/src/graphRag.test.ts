@@ -5,6 +5,7 @@ import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {RetrievalRuntime} from "./retrieval/runtime.js";
 import {BailianRetrievalModels, RetrievalSettingsStore} from "./retrieval/settings.js";
+import {testRetrievalSettings} from "./retrieval/testSettings.js";
 import {SourceGraphStore, validateGraph} from "./retrieval/graph.js";
 import type {IndexRow, Models, SourceBackend, SourceChunk, SourceDescriptor} from "./retrieval/types.js";
 import {sourceIndexLabel} from "../web/src/retrievalView.js";
@@ -14,7 +15,7 @@ test("native-text graph progresses while an 800-page PDF still has pending visua
   const provider = join(directory, "providers.json");
   await writeFile(provider, JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), provider, join(directory, "secrets.json"));
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", dimensions: 64});
+  await settings.save(testRetrievalSettings);
   const source: SourceDescriptor = {source_id: "material:long", kind: "material", name: "long.pdf", goal_id: "goal",
     goal_name: "goal", draft_session_id: null, skill_id: "", version: "v1", parse_status: "ready", warnings: [], visual_count: 800};
   const text = "太阳风撞击磁层，扰动磁层的形状。";
@@ -89,7 +90,7 @@ test("visual revisions and process restart advance native graph batches without 
   const provider = join(directory, "providers.json");
   await writeFile(provider, JSON.stringify({profiles: [{id: "p", provider: "aliyun", model: "chat", baseUrl: "https://example.test/v1"}]}));
   const settings = new RetrievalSettingsStore(join(directory, "settings.json"), provider, join(directory, "secrets.json"));
-  await settings.save({...await settings.get(), enabled: true, profileId: "p", dimensions: 64});
+  await settings.save(testRetrievalSettings);
   let revision = 0;
   const source = (): SourceDescriptor => ({source_id: "material:long", kind: "material", name: "long.pdf", goal_id: "goal",
     goal_name: "goal", draft_session_id: null, skill_id: "", version: "v" + revision, parse_status: "ready", warnings: [], visual_count: 800});

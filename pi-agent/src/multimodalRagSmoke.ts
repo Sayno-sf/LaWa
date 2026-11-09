@@ -44,7 +44,9 @@ try {
   }
   const settings = new RetrievalSettingsStore(join(temp, "retrieval", "settings.json"), join(root, "data", "provider-settings.json"), join(root, "data", "provider-secrets.json"));
   const live = new RetrievalSettingsStore(join(root, "data", "retrieval", "settings.json"), settings.providerPath, settings.secretsPath);
-  const config = await live.get(); await settings.save({...config, visionEnabled: true, graphEnabled: true});
+  const config = await live.get();
+  assert.ok(config.enabled, "Save and enable retrieval settings before running this real-provider smoke.");
+  await settings.save({...config, visionEnabled: true, graphEnabled: true});
   report.models = {embedding: config.embeddingModel, rerank: config.rerankModel, vision: config.visionModel || (await live.queryModel(config.profileId)).model,
     extraction: config.extractionModel || (await live.queryModel(config.profileId)).model};
   const backend = new KernelSourceBackend(base);

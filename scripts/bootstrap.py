@@ -63,6 +63,16 @@ def install() -> None:
     # The bundled CPU runtime is enough for a local workspace.
     npm_env.setdefault("ONNXRUNTIME_NODE_INSTALL_CUDA", "skip")
     subprocess.run([npm, "ci", "--no-audit", "--no-fund", "--include=dev"], cwd=AGENT, env=npm_env, check=True)
+    print("Preparing the local camera observation model.", flush=True)
+    try:
+        subprocess.run([npm, "run", "camera:assets"], cwd=AGENT, check=True)
+    except subprocess.CalledProcessError:
+        print(
+            "Camera model setup failed. The workspace can still run. Retry with "
+            "'npm --prefix pi-agent run camera:assets', then 'npm --prefix pi-agent run web:build'.",
+            file=sys.stderr,
+            flush=True,
+        )
     subprocess.run([npm, "run", "web:build"], cwd=AGENT, check=True)
 
 
@@ -178,8 +188,18 @@ def start(data: Path, kernel_port: int, web_port: int, *, check: bool = False, o
                     raise RuntimeError("The workspace page was not served.")
             with LOCAL_HTTP.open(f"{web_url}/api/web/provider-settings", timeout=10) as response:
                 settings = json.load(response)
-                if settings["active"]["hasApiKey"]:
-                    raise RuntimeError("A fresh workspace unexpectedly inherited model credentials.")
+            if settings["profiles"] or settings["activeProfileId"] is not None or any(
+                settings["active"][field] for field in ("provider", "model", "baseUrl", "hasApiKey")
+            ):
+                raise RuntimeError("A fresh workspace unexpectedly inherited model settings.")
+            with LOCAL_HTTP.open(f"{web_url}/api/web/retrieval-settings", timeout=10) as response:
+                retrieval = json.load(response)
+            if any(retrieval[field] for field in ("enabled", "profileId", "embeddingModel", "rerankModel", "embeddingUrl", "rerankUrl")):
+                raise RuntimeError("A fresh workspace unexpectedly has retrieval settings.")
+            with LOCAL_HTTP.open(f"{web_url}/api/web/speech-settings", timeout=10) as response:
+                speech = json.load(response)
+            if speech["enabled"] or speech["profileId"]:
+                raise RuntimeError("A fresh workspace unexpectedly has active speech settings.")
             print("LaWa startup check passed with a fresh workspace.", flush=True)
             return
         print(f"\nLaWa is ready at {web_url}\nData directory: {data}\nPress Ctrl+C to stop.", flush=True)

@@ -8,7 +8,7 @@ interface Profile { id: string; provider: string; model: string; baseUrl: string
 export class RetrievalSettingsStore {
   constructor(readonly path: string, readonly providerPath: string, readonly secretsPath: string) {}
 
-  private async providers(): Promise<{ activeProfileId?: string; profiles: Profile[] }> {
+  private async providers(): Promise<{ profiles: Profile[] }> {
     try { return JSON.parse(await readFile(this.providerPath, "utf8")); }
     catch { return { profiles: [] }; }
   }
@@ -16,17 +16,10 @@ export class RetrievalSettingsStore {
     try { return {visionEnabled: true, graphEnabled: true, visionModel: "", extractionModel: "", ...JSON.parse(await readFile(this.path, "utf8"))}; }
     catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw new Error("检索配置损坏，请在设置中重新保存。");
-      const providers = await this.providers();
-      const profile = providers.profiles.find(p => p.id === providers.activeProfileId && /bailian|aliyun/.test(p.provider))
-        ?? providers.profiles.find(p => /bailian|aliyun/.test(p.provider));
-      const base = new URL(profile?.baseUrl ?? "https://dashscope.aliyuncs.com/compatible-mode/v1");
-      const embeddingUrl = base.origin + "/compatible-mode/v1/embeddings";
-      const rerankUrl = base.origin + "/compatible-api/v1/reranks";
-      const config: RetrievalSettings = { version: 1, enabled: Boolean(profile), profileId: profile?.id ?? "",
-        embeddingModel: "text-embedding-v4", dimensions: 1024, embeddingUrl,
-        rerankModel: "qwen3-rerank", rerankUrl, minimumRerankScore: .5 };
-      await this.save(config);
-      return config;
+      // A first read cannot select a credential, turn on cloud retrieval, or write settings.
+      return { version: 1, enabled: false, profileId: "", embeddingModel: "", dimensions: 1024,
+        embeddingUrl: "", rerankModel: "", rerankUrl: "", minimumRerankScore: .5,
+        visionEnabled: false, graphEnabled: false, visionModel: "", extractionModel: "" };
     }
   }
   async save(input: RetrievalSettings): Promise<void> {

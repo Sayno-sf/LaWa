@@ -1,6 +1,7 @@
 /** 仅跟踪当前表单的保存状态，不保存配置、不触发请求，也不在浏览器持久化字段。 */
 export class FormSaveState {
   private saved = "";
+  private initialMessage: string | undefined;
   private ready = false;
   private locked = new Map<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLButtonElement, boolean>();
   busy = false;
@@ -15,15 +16,17 @@ export class FormSaveState {
     return JSON.stringify([...this.form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("input, select, textarea")]
       .map(field => [field.name || field.id, field.type === "checkbox" ? (field as HTMLInputElement).checked : field.value]));
   }
-  markClean(message = "已保存"): void {
+  markClean(message = "已保存", state: "saved" | "initial" = "saved"): void {
     this.ready = true;
     this.saved = this.fingerprint();
-    this.show("saved", message);
+    this.initialMessage = state === "initial" ? message : undefined;
+    this.show(state, message);
   }
   private changed(): void {
     if (!this.ready || this.busy) return;
-    this.show(this.fingerprint() === this.saved ? "saved" : "dirty",
-      this.fingerprint() === this.saved ? "已保存" : "有未保存的修改 · 保存后生效");
+    if (this.fingerprint() !== this.saved) this.show("dirty", "有未保存的修改 · 保存后生效");
+    else if (this.initialMessage !== undefined) this.show("initial", this.initialMessage);
+    else this.show("saved", "已保存");
   }
   begin(): boolean {
     if (this.busy) return false;

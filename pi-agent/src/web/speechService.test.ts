@@ -27,6 +27,23 @@ async function fixture(mock: typeof fetch, timeoutMs?: number, streamSynthesis=f
 const impossibleFetch = (async () => { throw new Error("network must not run"); }) as typeof fetch;
 const rejectsCode = (code: string) => (error: unknown) => error instanceof SpeechServiceError && error.code === code;
 
+test("fresh speech settings distinguish fallback values from a saved configuration", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "lawa-speech-first-save-"));
+  const settingsPath = join(directory, "speech-settings.json");
+  const options = { settingsPath, credentials: { async getSpeechCredentials(): Promise<never> { throw new Error("Unexpected credential lookup"); } }, fetch: impossibleFetch };
+  try {
+    const service = new SpeechService(options);
+    assert.deepEqual(await service.getPublicSettings(), { ...DEFAULT_SPEECH_SETTINGS, saved: false });
+    await assert.rejects(readFile(settingsPath), { code: "ENOENT" });
+    await assert.rejects(service.saveSettings({ ...DEFAULT_SPEECH_SETTINGS, enabled: true }), rejectsCode("MISSING_SPEECH_PROFILE"));
+    assert.equal((await service.getPublicSettings()).saved, false);
+    const existing = { ...DEFAULT_SPEECH_SETTINGS, region: "singapore", voice: "Serena" };
+    assert.deepEqual(await service.saveSettings(existing), existing);
+    assert.deepEqual(await new SpeechService(options).getPublicSettings(), existing);
+    assert.deepEqual(JSON.parse(await readFile(settingsPath, "utf8")), existing);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
 test("voice accepts 120-second mono PCM WAV and rejects format, duration and size before provider", () => {
   assert.equal(validateVoiceWav(wav(120)).length, 3_840_044);
   assert.throws(() => validateVoiceWav(wav(120.001)), rejectsCode("VOICE_AUDIO_TOO_LONG"));

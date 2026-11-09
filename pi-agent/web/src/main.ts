@@ -951,7 +951,7 @@ function renderProviderEditor(profile?: ProviderProfile): void {
   providerPresetPicker.sync();
   elements.modelInput.value = profile?.model ?? "";
   elements.thinkingLevelInput.value = profile?.thinkingLevel ?? "off";
-  elements.maxOutputTokensInput.value = String(profile?.maxOutputTokens ?? 32_768);
+  elements.maxOutputTokensInput.value = profile ? String(profile.maxOutputTokens) : "";
   elements.baseUrlInput.value = profile?.baseUrl ?? "";
   elements.apiKeyInput.value = "";
   elements.apiKeyInput.placeholder = profile?.hasApiKey
@@ -959,13 +959,14 @@ function renderProviderEditor(profile?: ProviderProfile): void {
     : "输入 API Key";
   elements.apiKeyState.textContent = profile?.hasApiKey
     ? `已保存 ${profile.apiKeyHint ?? "密钥"}，仅保存在本机`
-    : "新配置需要输入 API Key（或使用同 Provider 的环境凭据）";
+    : "新配置需要输入 API Key";
   const selectedIsActive = Boolean(
     profile && providerCatalog?.activeProfileId === profile.id,
   );
   elements.activateProvider.classList.toggle("hidden", !profile || selectedIsActive);
   elements.deleteProvider.classList.toggle("hidden", !profile || selectedIsActive);
-  providerSaveState.markClean(profile ? "已保存" : "新配置 · 保存后使用");
+  if (profile) providerSaveState.markClean();
+  else providerSaveState.markClean("新配置 · 保存后使用", "initial");
 }
 
 function renderProviderCatalog(catalog: ProviderCatalog): void {
@@ -1005,7 +1006,7 @@ function providerInput(): {
   model: string;
   baseUrl: string;
   thinkingLevel: ProviderThinkingLevel;
-  maxOutputTokens: number;
+  maxOutputTokens?: number;
   apiKey?: string;
 } {
   // Key 只从当前 password input 进入单次 HTTPS/localhost 请求；不写 localStorage、
@@ -1016,7 +1017,7 @@ function providerInput(): {
     provider: elements.providerInput.value,
     model: elements.modelInput.value,
     thinkingLevel: elements.thinkingLevelInput.value as ProviderThinkingLevel,
-    maxOutputTokens: Number(elements.maxOutputTokensInput.value),
+    ...(elements.maxOutputTokensInput.value ? { maxOutputTokens: Number(elements.maxOutputTokensInput.value) } : {}),
     baseUrl: elements.baseUrlInput.value,
     ...(elements.apiKeyInput.value ? { apiKey: elements.apiKeyInput.value } : {}),
   };
